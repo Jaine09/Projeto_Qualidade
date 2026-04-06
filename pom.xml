@@ -9,10 +9,10 @@
         <relativePath/>
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>educational-quality-project</artifactId>
+    <artifactId>projeto-qualidade</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Educational Quality Project</name>
-    <description>Project for teaching quality to students</description>
+    <name>Gerenciamento de Livros</name>
+    <description>Projeto para gerenciar livros</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -47,6 +47,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.livraria.LivrariaApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

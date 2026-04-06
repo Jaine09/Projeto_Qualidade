@@ -1,0 +1,192 @@
+/* Layout Geral */
+.root {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-inter);
+}
+
+/* Header Azul */
+.rectangle-parent {
+  align-self: stretch;
+  background-color: var(--color-lightskyblue);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 15px;
+}
+
+.go-back-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.go-back-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.editar-livro {
+  margin: 0;
+  color: white;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+/* Container do Card (Centralização) */
+.root-inner {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+.rectangle-group {
+  background-color: #f5f5f5; /* Cinza claro do card */
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 500px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Organização Interna */
+.top-inputs {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 20px;
+}
+
+/* Quadrado da Imagem */
+.image-upload-placeholder {
+  width: 140px;
+  height: 140px;
+  background-color: white;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.add-image-icon {
+  width: 50px;
+  object-fit: contain;
+}
+
+/* Campos de Texto */
+.author-genre-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.label-text {
+  font-size: 14px;
+  color: var(--color-lightskyblue);
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-field, .select-field, .description-input {
+  background-color: white;
+  border-radius: 15px;
+  border: none;
+  width: 100%;
+  height: 35px;
+}
+
+.select-field {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+}
+
+.chevron-icon {
+  width: 12px;
+  transform: rotate(-90deg); /* Ajuste para o chevron apontar para baixo */
+}
+
+.description-input {
+  height: 100px; /* Área maior para descrição */
+  margin-top: 5px;
+}
+
+/* Botão Salvar (Amarelo) */
+.button-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.save-button {
+  background-color: #f2f261; /* Cor khaki/amarela da imagem */
+  border: none;
+  border-radius: 25px;
+  padding: 10px 40px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.save-button:hover {
+  filter: brightness(0.9);
+}
+
+.salvar {
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+@media screen and (max-width: 423px) {
+  .rectangle-parent {
+    flex-wrap: wrap;
+  }
+}
+@media screen and (max-width: 357px) {
+  .rectangle-group {
+    padding-left: var(--padding-20);
+    padding-right: var(--padding-20);
+    box-sizing: border-box;
+  }
+}
+@media screen and (max-width: 335px) {
+  .frame-parent {
+    flex-wrap: wrap;
+  }
+}
+@media screen and (max-width: 278px) {
+  .rectangle-parent {
+    flex-wrap: wrap;
+  }
+}
+@media screen and (max-width: 267px) {
+  .frame-wrapper {
+    padding-left: var(--padding-20);
+    padding-right: var(--padding-20);
+    box-sizing: border-box;
+  }
+}
+@media screen and (max-width: 260px) {
+  .frame-parent {
+    gap: 17px;
+  }
+}
+@media screen and (max-width: 167px) {
+  .rectangle-parent {
+    flex-wrap: wrap;
+  }
+}
