@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <link rel="stylesheet" href="/css/global.css" />
-    <link rel="stylesheet" href="/css/paginaInicial.css" />
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/paginaInicial.css}" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"/>
 </head>
 <body>
 <div class="intro-to-journal">
     <div class="rectangle-parent">
-        <button class="frame-wrapper">
+        <a th:href="@{/}" class="frame-wrapper" style="text-decoration: none;">
             <div class="abertura-da-porta-aberta-1-parent">
-                <img class="abertura-da-porta-aberta-1-icon" alt="" src="./public/abertura-da-porta-aberta-1@2x.png" />
+                <img class="abertura-da-porta-aberta-1-icon" alt="" src="/img/sair.png" />
                 <div class="sair-wrapper">
                     <b class="sair">Sair</b>
                 </div>
             </div>
-        </button>
+        </a>
         <h2 class="minha-biblioteca">Minha Biblioteca</h2>
     </div>
 
@@ -26,25 +26,29 @@
             <div class="frame-group">
                 <div class="rounded-rectangle-parent">
                     <input class="buscar" placeholder="Buscar" type="text" />
-                    <img class="search-icon" alt="" src="/img/buscar.png" />
+                    <img class="search-icon" alt="" th:src="@{/img/buscar.png}" />
                 </div>
                 <div class="frame-container">
-                    <button class="rectangle-group">
+                    <a th:href="@{/novo}" class="rectangle-group" style="text-decoration: none; display: inline-block;">
                         <b class="novo">Novo</b>
-                    </button>
+                    </a>
                 </div>
             </div>
 
-            <div class="rectangle-container">
-                <div class="frame-div">
-                    <img class="add-image-icon" alt="" src="./public/Add-Image@2x.png" />
+            <div class="rectangle-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                <div class="frame-div" th:each="livro : ${livros}">
+                    <img class="add-image-icon" alt="" th:src="@{/img/adicionarImagem.png}" />
                     <div class="ttulo-parent">
-                        <b class="ttulo">Título</b>
-                        <div class="gnero">Gênero</div>
+                        <b class="ttulo" th:text="${livro.titulo}">Título</b>
+                        <div class="gnero" th:text="${livro.genero}">Gênero</div>
                     </div>
                     <div class="actions-icons">
-                        <img class="action-icon" alt="" src="/img/editar.png" />
-                        <img class="action-icon" alt="" src="/img/excluir.png" />
+                        <a th:href="@{/editar/{id}(id=${livro.id})}">
+                            <img class="action-icon" alt="Editar" th:src="@{/img/editar.png}" />
+                        </a>
+                        <a th:href="@{/deletar/{id}(id=${livro.id})}" onclick="return confirm('Tem certeza que deseja excluir?')">
+                            <img class="action-icon" alt="Excluir" th:src="@{/img/excluir.png}" />
+                        </a>
                     </div>
                 </div>
 

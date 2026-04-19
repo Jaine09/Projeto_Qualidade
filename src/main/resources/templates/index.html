@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
-
-    <link rel="stylesheet" href="/css/global.css" />
-    <link rel="stylesheet" href="/css/login.css" />
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
 </head>
 <body>
 <div class="screen">
     <div class="login-container">
-        <div class="form-container">
-            <div class="form-container-child"></div>
+        <form th:action="@{/login}" method="post" class="form-container">
             <div class="fields-container">
                 <h2 class="faa-seu-login">Faça seu login</h2>
             </div>
@@ -19,22 +17,23 @@
                 <input
                         class="email-label-container"
                         placeholder="E-mail"
-                        type="text"
+                        name="email"
+                        type="email"
+                        required
                 />
-
                 <div class="password-container">
                     <input
                             class="email-label-container"
                             placeholder="Senha"
-                            type="text"
+                            name="senha"
+                            type="password"
+                            required
                     />
-
                     <div class="forgotten-password-container">
                         <div class="forgotten-container">
                             <div class="esqueceu-a-senha">Esqueceu a senha?</div>
                             <div class="login-button-container">
-                                <button class="button-container">
-                                    <div class="button-container-child"></div>
+                                <button type="submit" class="button-container">
                                     <div class="entrar">Entrar</div>
                                 </button>
                             </div>
@@ -44,18 +43,13 @@
             </div>
             <div class="register-container">
                 <div class="j-posssui-cadastro-container">
-                    <span>Já posssui cadastro? </span>
-                    <span class="cadastre-se-aqui">Cadastre-se aqui</span>
+                    <span>Não possui cadastro? </span>
+                    <a th:href="@{/cadastro}" class="cadastre-se-aqui">Cadastre-se aqui</a>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
-    <img
-            class="books-with-flipping-pages-1-icon"
-            loading="lazy"
-            alt=""
-            src="/img/imgLogin.jpg"
-    />
+    <img class="books-with-flipping-pages-1-icon" loading="lazy" alt="" th:src="@{/img/imgLogin.jpg}"/>
 </div>
 </body>
 </html>

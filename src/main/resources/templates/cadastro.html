@@ -1,38 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
-
-    <link rel="stylesheet" href="/css/global.css" />
-    <link rel="stylesheet" href="/css/cadastro.css" />
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/cadastro.css}" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"/>
 </head>
 <body>
 <div class="landing-page">
-    <img class="view-books-arrangement-1-icon" alt="" src="/img/imgFundo.webp"/>
+    <img class="view-books-arrangement-1-icon" alt="" th:src="@{/img/imgFundo.webp}"/>
 
-    <div class="rectangle-parent">
-        <div class="frame-child"></div>
+    <form th:action="@{/cadastro}" method="post" class="rectangle-parent">
         <div class="faa-seu-cadastro-wrapper">
             <h2 class="faa-seu-cadastro">Faça seu cadastro</h2>
         </div>
         <div class="form">
-            <input class="fields" placeholder="Nome" type="text" />
-
-            <input class="fields" placeholder="E-mail" type="text" />
-
-            <input class="fields" placeholder="Senha" type="text" />
-
-            <input class="fields" placeholder="Confirmar senha" type="text" />
+            <input class="fields" name="nome" placeholder="Nome" type="text" required />
+            <input class="fields" name="email" placeholder="E-mail" type="email" required />
+            <input class="fields" name="senha" placeholder="Senha" type="password" required />
+            <input class="fields" placeholder="Confirmar senha" type="password" required />
         </div>
         <div class="control">
-            <button class="action">
-                <div class="action-child"></div>
-                <div class="entrar2">Entrar</div>
+            <button type="submit" class="action">
+                <div class="entrar2">Cadastrar</div>
             </button>
         </div>
-    </div>
+    </form>
 </div>
 </body>
 </html>
