@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/paginaInicial.css}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"/>
+</head>
+<body>
+<div class="intro-to-journal">
+    <div class="rectangle-parent">
+        <a th:href="@{/}" class="frame-wrapper" style="text-decoration: none;">
+            <div class="abertura-da-porta-aberta-1-parent">
+                <img class="abertura-da-porta-aberta-1-icon" alt="" src="/img/sair.png" />
+                <div class="sair-wrapper">
+                    <b class="sair">Sair</b>
+                </div>
+            </div>
+        </a>
+        <h2 class="minha-biblioteca">Minha Biblioteca</h2>
+    </div>
+
+    <section class="intro-to-journal-inner">
+        <div class="frame-parent">
+            <div class="frame-group">
+                <div class="rounded-rectangle-parent">
+                    <input class="buscar" placeholder="Buscar" type="text" />
+                    <img class="search-icon" alt="" th:src="@{/img/buscar.png}" />
+                </div>
+                <div class="frame-container">
+                    <a th:href="@{/novo}" class="rectangle-group" style="text-decoration: none; display: inline-block;">
+                        <b class="novo">Novo</b>
+                    </a>
+                </div>
+            </div>
+
+            <div class="rectangle-container" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                <div class="frame-div" th:each="livro : ${livros}">
+                    <img class="add-image-icon" alt="" th:src="@{/img/adicionarImagem.png}" />
+                    <div class="ttulo-parent">
+                        <b class="ttulo" th:text="${livro.titulo}">Título</b>
+                        <div class="gnero" th:text="${livro.genero}">Gênero</div>
+                    </div>
+                    <div class="actions-icons">
+                        <a th:href="@{/editar/{id}(id=${livro.id})}">
+                            <img class="action-icon" alt="Editar" th:src="@{/img/editar.png}" />
+                        </a>
+                        <a th:href="@{/deletar/{id}(id=${livro.id})}" onclick="return confirm('Tem certeza que deseja excluir?')">
+                            <img class="action-icon" alt="Excluir" th:src="@{/img/excluir.png}" />
+                        </a>
+                    </div>
+                </div>
+
+                <div class="custom-scrollbar"></div>
+            </div>
+        </div>
+    </section>
+</div>
+</body>
+</html>

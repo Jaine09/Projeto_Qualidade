@@ -1,0 +1,145 @@
+.intro-to-journal {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-inter);
+}
+
+.rectangle-parent {
+  align-self: stretch;
+  background-color: var(--color-lightskyblue);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0 20px;
+}
+
+.frame-wrapper {
+  position: absolute;
+  left: 20px;
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+}
+
+.abertura-da-porta-aberta-1-parent {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.minha-biblioteca {
+  margin: 0;
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.frame-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.rounded-rectangle-parent {
+  background-color: #f0f0f0;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  width: 300px;
+}
+
+.buscar {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+}
+
+.search-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.rectangle-group {
+  background-color: var(--color-lightskyblue);
+  border-radius: 20px;
+  padding: 10px 30px;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+/* Container Principal e Card */
+.rectangle-container {
+  background-color: #f5f5f5;
+  border-radius: 15px;
+  flex: 1;
+  min-height: 400px;
+  padding: 30px;
+  display: flex;
+  position: relative; /* Para a barra lateral */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.frame-div {
+  background-color: white;
+  width: 140px;
+  height: 200px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.add-image-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.ttulo-parent {
+  text-align: center;
+}
+
+.ttulo { font-size: 16px; display: block; }
+.gnero { font-size: 12px; color: #666; }
+
+/* Ícones de Ação Lado a Lado */
+.actions-icons {
+  display: flex;
+  gap: 15px;
+  margin-top: 5px;
+}
+
+.action-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* Barra lateral azul (Simulando o scroll da Imagem 2) */
+.custom-scrollbar {
+  position: absolute;
+  right: 15px;
+  top: 30px;
+  bottom: 30px;
+  width: 6px;
+  background-color: var(--color-lightskyblue);
+  border-radius: 10px;
+  opacity: 0.7;
+}
+
+.intro-to-journal-inner {
+    padding: 0 40px;
+}

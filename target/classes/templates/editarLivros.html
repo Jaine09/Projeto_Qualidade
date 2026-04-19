@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <link rel="stylesheet" th:href="@{/css/global.css}" />
+    <link rel="stylesheet" th:href="@{/css/editarLivros.css}" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" />
+</head>
+<body>
+<div class="root">
+    <div class="rectangle-parent">
+        <a th:href="@{/home}" class="go-back-button">
+            <img class="go-back-icon" alt="Voltar" th:src="@{/img/voltar.png}" />
+        </a>
+        <h3 class="editar-livro">Editar livro</h3>
+    </div>
+
+    <form th:action="@{/salvar}" th:object="${livro}" method="post">
+        <input type="hidden" th:field="*{id}" />
+
+        <section class="root-inner">
+            <div class="rectangle-group">
+                <div class="form-content">
+                    <div class="top-inputs">
+                        <div class="image-upload-placeholder">
+                            <img class="add-image-icon" alt="Adicionar Imagem" th:src="@{/img/adicionarImagem.png}" />
+                        </div>
+
+                        <div class="author-genre-fields">
+                            <div class="field-group">
+                                <label class="label-text">Título</label>
+                                <input class="input-field" type="text" th:field="*{titulo}" required />
+                            </div>
+                            <div class="field-group">
+                                <label class="label-text">Autor</label>
+                                <input class="input-field" type="text" th:field="*{autor}" />
+                            </div>
+                            <div class="field-group">
+                                <label class="label-text">Gênero</label>
+                                <input class="input-field" type="text" th:field="*{genero}" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="description-section">
+                        <label class="label-text">Descrição</label>
+                        <input class="description-input" type="text" th:field="*{descricao}" />
+                    </div>
+                </div>
+
+                <div class="button-wrapper">
+                    <button type="submit" class="save-button">
+                        <span class="salvar">Salvar Alterações</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </form>
+</div>
+</body>
+</html>
