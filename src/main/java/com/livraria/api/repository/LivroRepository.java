@@ -1,4 +1,4 @@
-package com.livraria.repository;
+package com.livraria.api.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import com.livraria.entity.Livro;
