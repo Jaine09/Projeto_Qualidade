@@ -16,7 +16,6 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // Página inicial (login)
     @GetMapping("/")
     public String loginPage(Model model) {
 
@@ -24,7 +23,7 @@ public class UsuarioController {
         return "login";
     }
 
-    // RF02 — Login
+  
     @PostMapping("/login")
     public String login(@ModelAttribute Usuario usuario,
                         HttpSession session,
@@ -53,7 +52,6 @@ public class UsuarioController {
         });
     }
 
-    // Página de cadastro
     @GetMapping("/cadastro")
     public String cadastroPage(Model model) {
 
@@ -61,7 +59,7 @@ public class UsuarioController {
         return "cadastro";
     }
 
-    // RF01 — Cadastro de Usuário
+  
     @PostMapping("/cadastro")
     public String cadastrar(@ModelAttribute Usuario usuario,
                             Model model) {
@@ -83,7 +81,6 @@ public class UsuarioController {
         }
     }
 
-    // RF08 — Logout
     @GetMapping("/logout")
     public String logout(HttpSession session) {
 
