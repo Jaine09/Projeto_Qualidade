@@ -14,13 +14,11 @@ public class LivroService {
     @Autowired
     private LivroRepository livroRepository;
 
-    // CREATE
     public Livro salvar(Livro livro) {
         validar(livro);
         return livroRepository.save(livro);
     }
 
-    // READ
     public List<Livro> listarPorUsuario(String usuarioId) {
         return livroRepository.findByUsuarioId(usuarioId);
     }
@@ -29,28 +27,39 @@ public class LivroService {
         return livroRepository.findById(id);
     }
 
-    // UPDATE
-    public Optional<Livro> atualizar(String id, Livro livroAtualizado) {
+    public Optional<Livro> atualizar(String id, Livro dados) {
+        validar(dados);
+
         return livroRepository.findById(id).map(livro -> {
-            livro.setTitulo(livroAtualizado.getTitulo());
-            livro.setAutor(livroAtualizado.getAutor());
-            livro.setDescricao(livroAtualizado.getDescricao());
+            atualizarCampos(livro, dados);
             return livroRepository.save(livro);
         });
     }
 
-    // DELETE
     public boolean deletar(String id) {
-        if (livroRepository.existsById(id)) {
-            livroRepository.deleteById(id);
-            return true;
-        }
-        return false;
+        return livroRepository.findById(id)
+                .map(livro -> {
+                    livroRepository.delete(livro);
+                    return true;
+                })
+                .orElse(false);
+    }
+
+    private void atualizarCampos(Livro livro, Livro dados) {
+        livro.setTitulo(dados.getTitulo());
+        livro.setAutor(dados.getAutor());
+        livro.setGenero(dados.getGenero());
+        livro.setDescricao(dados.getDescricao());
+        livro.setImagem(dados.getImagem());
     }
 
     private void validar(Livro livro) {
         if (livro.getTitulo() == null || livro.getTitulo().isBlank()) {
             throw new IllegalArgumentException("Título obrigatório");
+        }
+
+        if (livro.getUsuarioId() == null || livro.getUsuarioId().isBlank()) {
+            throw new IllegalArgumentException("Usuário obrigatório");
         }
     }
 }

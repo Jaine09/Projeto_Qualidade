@@ -1,0 +1,6 @@
+com\livraria\api\controller\LivroRestControllerTest.class
+com\livraria\api\service\UsuarioServiceIntegrationTest.class
+com\livraria\api\service\LivroServiceIntegrationTest.class
+com\livraria\api\controller\UsuarioRestControllerTest.class
+com\livraria\api\service\LivroServiceParametrizedTest.class
+com\livraria\api\service\UsuarioServiceParametrizedTest.class

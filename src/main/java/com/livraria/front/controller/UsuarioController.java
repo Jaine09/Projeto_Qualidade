@@ -16,14 +16,12 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @GetMapping("/")
+    @GetMapping({"/", "/login"})
     public String loginPage(Model model) {
-
         model.addAttribute("usuario", new Usuario());
-        return "login";
+        return "index";
     }
 
-  
     @PostMapping("/login")
     public String login(@ModelAttribute Usuario usuario,
                         HttpSession session,
@@ -34,58 +32,44 @@ public class UsuarioController {
                 usuario.getSenha()
         ).map(usuarioLogado -> {
 
-            session.setAttribute(
-                    "usuarioLogado",
-                    usuarioLogado
-            );
+            usuarioLogado.setSenha(null);
+            session.setAttribute("usuarioLogado", usuarioLogado);
 
             return "redirect:/home";
 
         }).orElseGet(() -> {
 
-            model.addAttribute(
-                    "erro",
-                    "Credenciais inválidas"
-            );
+            model.addAttribute("erro", "Email ou senha inválidos");
+            model.addAttribute("usuario", new Usuario());
 
-            return "login";
+            return "index";
         });
     }
 
     @GetMapping("/cadastro")
     public String cadastroPage(Model model) {
-
         model.addAttribute("usuario", new Usuario());
         return "cadastro";
     }
 
-  
     @PostMapping("/cadastro")
     public String cadastrar(@ModelAttribute Usuario usuario,
                             Model model) {
 
         try {
-
             usuarioService.salvar(usuario);
-
-            return "redirect:/";
+            return "redirect:/login";
 
         } catch (Exception e) {
-
-            model.addAttribute(
-                    "erro",
-                    "Erro ao cadastrar usuário"
-            );
-
+            model.addAttribute("erro", e.getMessage());
+            model.addAttribute("usuario", usuario);
             return "cadastro";
         }
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-
         session.invalidate();
-
-        return "redirect:/";
+        return "redirect:/login";
     }
 }

@@ -1,0 +1,12 @@
+com\livraria\api\repository\LivroRepository.class
+com\livraria\api\repository\UsuarioRepository.class
+com\livraria\api\service\LivroService.class
+com\livraria\LivrariaApplication.class
+com\livraria\front\controller\LivroController.class
+com\livraria\front\controller\UsuarioController.class
+com\livraria\entity\Livro.class
+com\livraria\api\controller\LivroRestController.class
+com\livraria\api\controller\UsuarioRestController.class
+com\livraria\api\service\UsuarioService.class
+com\livraria\config\SecurityConfig.class
+com\livraria\entity\Usuario.class
