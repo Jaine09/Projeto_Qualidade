@@ -1,30 +1,30 @@
 package com.livraria.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.livraria.api.repository.LivroRepository;
 import com.livraria.entity.Livro;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-
-import org.springframework.http.*;
-
+import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 @Testcontainers
-public class LivroRestControllerTest {
+class LivroRestControllerTest {
 
     @Container
     static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:6.0");
@@ -34,235 +34,153 @@ public class LivroRestControllerTest {
         registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
     }
 
-    @LocalServerPort
-    private int port;
-
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
     @Autowired
     private LivroRepository livroRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void limparBanco() {
         livroRepository.deleteAll();
     }
 
-    private String url(String path) {
-        return "http://localhost:" + port + path;
+    @Test
+    void deveCriarLivroComSucesso() throws Exception {
+        Livro livro = new Livro("Dom Casmurro", "Machado de Assis", "Romance", "Descrição", "imagem.jpg", "usuario-1");
+
+        mockMvc.perform(post("/api/livros")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(livro)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.titulo").value("Dom Casmurro"))
+                .andExpect(jsonPath("$.autor").value("Machado de Assis"));
+
+        assertEquals(1, livroRepository.count());
     }
 
     @Test
-    void deveCriarLivro() {
-        Livro livro = new Livro(
-                "Livro Teste",
-                "Autor",
-                "Gênero",
-                "Descrição",
-                "img",
-                "user1"
-        );
+    void deveRetornarBadRequestAoCriarLivroInvalido() throws Exception {
+        Livro livro = new Livro("", "Autor", "Gênero", "Descrição", "img", "usuario-1");
 
-        ResponseEntity<Livro> response = restTemplate.postForEntity(
-                url("/api/livros"),
-                livro,
-                Livro.class
-        );
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertNotNull(response.getBody().getId());
-        assertEquals("Livro Teste", response.getBody().getTitulo());
+        mockMvc.perform(post("/api/livros")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(livro)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void deveRetornar400AoCriarLivroSemTitulo() {
-        Livro livro = new Livro(
-                "",
-                "Autor",
-                "Gênero",
-                "Descrição",
-                "img",
-                "user1"
-        );
+    void deveListarLivrosPorUsuario() throws Exception {
+        livroRepository.save(new Livro("Livro 1", "Autor", "Gênero", "Desc", "img", "usuario-1"));
+        livroRepository.save(new Livro("Livro 2", "Autor", "Gênero", "Desc", "img", "usuario-1"));
+        livroRepository.save(new Livro("Livro 3", "Autor", "Gênero", "Desc", "img", "usuario-2"));
 
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                url("/api/livros"),
-                livro,
-                String.class
-        );
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        mockMvc.perform(get("/api/livros/usuario/usuario-1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
-    void deveRetornar400AoCriarLivroSemUsuario() {
-        Livro livro = new Livro(
-                "Título",
-                "Autor",
-                "Gênero",
-                "Descrição",
-                "img",
-                ""
-        );
-
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                url("/api/livros"),
-                livro,
-                String.class
-        );
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    void deveRetornarBadRequestAoListarComUsuarioInvalido() throws Exception {
+        mockMvc.perform(get("/api/livros/usuario/%20"))
+                .andExpect(status().isBadRequest());
+                
     }
 
     @Test
-    void deveListarLivrosPorUsuario() {
-        livroRepository.save(new Livro("Livro 1", "Autor", "Gênero", "Descrição", "img", "user1"));
-        livroRepository.save(new Livro("Livro 2", "Autor", "Gênero", "Descrição", "img", "user1"));
-        livroRepository.save(new Livro("Livro 3", "Autor", "Gênero", "Descrição", "img", "user2"));
+    void deveBuscarLivroPorId() throws Exception {
+        Livro livro = livroRepository.save(new Livro("Livro", "Autor", "Gênero", "Desc", "img", "usuario-1"));
 
-        ResponseEntity<Livro[]> response = restTemplate.getForEntity(
-                url("/api/livros/usuario/user1"),
-                Livro[].class
-        );
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(2, response.getBody().length);
+        mockMvc.perform(get("/api/livros/" + livro.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.titulo").value("Livro"));
     }
 
     @Test
-    void deveBuscarLivroPorId() {
-        Livro salvo = livroRepository.save(
-                new Livro("Livro Teste", "Autor", "Gênero", "Descrição", "img", "user1")
-        );
-
-        ResponseEntity<Livro> response = restTemplate.getForEntity(
-                url("/api/livros/" + salvo.getId()),
-                Livro.class
-        );
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("Livro Teste", response.getBody().getTitulo());
+    void deveRetornarNotFoundAoBuscarLivroInexistente() throws Exception {
+        mockMvc.perform(get("/api/livros/id-inexistente"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Livro não encontrado"));
     }
 
     @Test
-    void deveRetornar404ParaLivroInexistente() {
-        ResponseEntity<String> response = restTemplate.getForEntity(
-                url("/api/livros/id-invalido"),
-                String.class
-        );
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    void deveRetornarBadRequestAoBuscarComIdInvalido() throws Exception {
+        mockMvc.perform(get("/api/livros/%20"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void deveAtualizarLivro() {
-        Livro salvo = livroRepository.save(
-                new Livro("Antigo", "Autor", "Gênero", "Descrição", "img", "user1")
-        );
+    void deveAtualizarLivroComSucesso() throws Exception {
+        Livro salvo = livroRepository.save(new Livro("Antigo", "Autor", "Gênero", "Desc", "img", "usuario-1"));
+        Livro atualizado = new Livro("Novo", "Novo Autor", "Novo Gênero", "Nova Desc", "nova-img", "usuario-1");
 
-        Livro atualizado = new Livro(
-                "Novo Título",
-                "Autor Atualizado",
-                "Novo Gênero",
-                "Nova descrição",
-                "nova-img",
-                "user1"
-        );
+        mockMvc.perform(put("/api/livros/" + salvo.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(atualizado)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.titulo").value("Novo"));
 
-        HttpEntity<Livro> request = new HttpEntity<>(atualizado);
-
-        ResponseEntity<Livro> response = restTemplate.exchange(
-                url("/api/livros/" + salvo.getId()),
-                HttpMethod.PUT,
-                request,
-                Livro.class
-        );
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("Novo Título", response.getBody().getTitulo());
-        assertEquals("Autor Atualizado", response.getBody().getAutor());
+        Livro livroBanco = livroRepository.findById(salvo.getId()).orElseThrow();
+        assertEquals("Novo", livroBanco.getTitulo());
     }
 
     @Test
-    void deveRetornar404AoAtualizarLivroInexistente() {
-        Livro livro = new Livro(
-                "Novo",
-                "Autor",
-                "Gênero",
-                "Descrição",
-                "img",
-                "user1"
-        );
+    void deveRetornarBadRequestAoAtualizarLivroInvalido() throws Exception {
+        Livro salvo = livroRepository.save(new Livro("Antigo", "Autor", "Gênero", "Desc", "img", "usuario-1"));
+        Livro invalido = new Livro("", "Autor", "Gênero", "Desc", "img", "usuario-1");
 
-        HttpEntity<Livro> request = new HttpEntity<>(livro);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                url("/api/livros/id-invalido"),
-                HttpMethod.PUT,
-                request,
-                String.class
-        );
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        mockMvc.perform(put("/api/livros/" + salvo.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalido)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void deveRetornar400AoAtualizarLivroComTituloInvalido() {
-        Livro salvo = livroRepository.save(
-                new Livro("Antigo", "Autor", "Gênero", "Descrição", "img", "user1")
-        );
+    void deveRetornarNotFoundAoAtualizarLivroInexistente() throws Exception {
+        Livro livro = new Livro("Livro", "Autor", "Gênero", "Desc", "img", "usuario-1");
 
-        Livro atualizado = new Livro(
-                "",
-                "Autor",
-                "Gênero",
-                "Descrição",
-                "img",
-                "user1"
-        );
-
-        HttpEntity<Livro> request = new HttpEntity<>(atualizado);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                url("/api/livros/" + salvo.getId()),
-                HttpMethod.PUT,
-                request,
-                String.class
-        );
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        mockMvc.perform(put("/api/livros/id-inexistente")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(livro)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Livro não encontrado"));
     }
 
     @Test
-    void deveDeletarLivro() {
-        Livro salvo = livroRepository.save(
-                new Livro("Livro", "Autor", "Gênero", "Descrição", "img", "user1")
-        );
+    void deveRetornarBadRequestAoAtualizarComIdInvalido() throws Exception {
+        Livro livro = new Livro("Livro", "Autor", "Gênero", "Desc", "img", "usuario-1");
 
-        ResponseEntity<Void> response = restTemplate.exchange(
-                url("/api/livros/" + salvo.getId()),
-                HttpMethod.DELETE,
-                null,
-                Void.class
-        );
-
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        assertTrue(livroRepository.findById(salvo.getId()).isEmpty());
+        mockMvc.perform(put("/api/livros/%20")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(livro)))
+                .andExpect(status().isBadRequest());
+                
     }
 
     @Test
-    void deveRetornar404AoDeletarLivroInexistente() {
-        ResponseEntity<String> response = restTemplate.exchange(
-                url("/api/livros/id-invalido"),
-                HttpMethod.DELETE,
-                null,
-                String.class
-        );
+    void deveDeletarLivroComSucesso() throws Exception {
+        Livro livro = livroRepository.save(new Livro("Livro", "Autor", "Gênero", "Desc", "img", "usuario-1"));
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        mockMvc.perform(delete("/api/livros/" + livro.getId()))
+                .andExpect(status().isNoContent());
+
+        assertTrue(livroRepository.findById(livro.getId()).isEmpty());
+    }
+
+    @Test
+    void deveRetornarNotFoundAoDeletarLivroInexistente() throws Exception {
+        mockMvc.perform(delete("/api/livros/id-inexistente"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Livro não encontrado"));
+    }
+
+    @Test
+    void deveRetornarBadRequestAoDeletarComIdInvalido() throws Exception {
+        mockMvc.perform(delete("/api/livros/%20"))
+                .andExpect(status().isBadRequest());
+              
     }
 }

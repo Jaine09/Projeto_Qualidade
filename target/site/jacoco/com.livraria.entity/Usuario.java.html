@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Usuario.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Projeto Livraria</a> &gt; <a href="index.source.html" class="el_package">com.livraria.entity</a> &gt; <span class="el_source">Usuario.java</span></div><h1>Usuario.java</h1><pre class="source lang-java linenums">package com.livraria.entity;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
+
+@Document(collection = &quot;usuarios&quot;)
+public class Usuario {
+
+    @Id
+    private String id;
+
+    private String nome;
+    private String email;
+    private String senha;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    // Construtor padrão
+<span class="fc" id="L22">    public Usuario() {</span>
+<span class="fc" id="L23">        this.createdAt = LocalDateTime.now();</span>
+<span class="fc" id="L24">        this.updatedAt = LocalDateTime.now();</span>
+<span class="fc" id="L25">    }</span>
+
+    public Usuario(String nome, String email, String senha) {
+<span class="fc" id="L28">        this();</span>
+<span class="fc" id="L29">        this.nome = nome;</span>
+<span class="fc" id="L30">        this.email = email;</span>
+<span class="fc" id="L31">        this.senha = senha;</span>
+<span class="fc" id="L32">    }</span>
+
+    // Getters e Setters
+<span class="fc" id="L35">    public String getId() { return id; }</span>
+
+<span class="fc" id="L37">    public void setId(String id) { this.id = id; }</span>
+
+<span class="fc" id="L39">    public String getNome() { return nome; }</span>
+
+    public void setNome(String nome) {
+<span class="fc" id="L42">        this.nome = nome;</span>
+<span class="fc" id="L43">        this.updatedAt = LocalDateTime.now();</span>
+<span class="fc" id="L44">    }</span>
+
+<span class="fc" id="L46">    public String getEmail() { return email; }</span>
+
+    public void setEmail(String email) {
+<span class="fc" id="L49">        this.email = email;</span>
+<span class="fc" id="L50">        this.updatedAt = LocalDateTime.now();</span>
+<span class="fc" id="L51">    }</span>
+
+<span class="fc" id="L53">    public String getSenha() { return senha; }</span>
+
+    public void setSenha(String senha) {
+<span class="fc" id="L56">        this.senha = senha;</span>
+<span class="fc" id="L57">        this.updatedAt = LocalDateTime.now();</span>
+<span class="fc" id="L58">    }</span>
+
+<span class="fc" id="L60">    public LocalDateTime getCreatedAt() { return createdAt; }</span>
+
+<span class="fc" id="L62">    public LocalDateTime getUpdatedAt() { return updatedAt; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -1,30 +1,31 @@
 package com.livraria.api.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.livraria.api.repository.UsuarioRepository;
+import com.livraria.api.service.UsuarioService;
 import com.livraria.entity.Usuario;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-
-import org.springframework.http.*;
-
+import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MongoDBContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 @Testcontainers
-public class UsuarioRestControllerTest {
+class UsuarioRestControllerTest {
 
     @Container
     static MongoDBContainer mongoDBContainer = new MongoDBContainer("mongo:6.0");
@@ -34,232 +35,169 @@ public class UsuarioRestControllerTest {
         registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
     }
 
-    @LocalServerPort
-    private int port;
-
     @Autowired
-    private TestRestTemplate restTemplate;
+    private MockMvc mockMvc;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void limparBanco() {
         usuarioRepository.deleteAll();
     }
 
-    private String url(String path) {
-        return "http://localhost:" + port + path;
+    @Test
+    void deveCriarUsuarioComSucessoESemExporSenha() throws Exception {
+        Usuario usuario = new Usuario("Giulia", "giulia@email.com", "senha123");
+
+        mockMvc.perform(post("/api/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(usuario)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.nome").value("Giulia"))
+                .andExpect(jsonPath("$.email").value("giulia@email.com"))
+                .andExpect(jsonPath("$.senha").doesNotExist());
+
+        assertEquals(1, usuarioRepository.count());
     }
 
     @Test
-    void deveCriarUsuario() {
-        Usuario usuario = new Usuario("Giulia", "giulia@email.com", "123");
+    void deveRetornarBadRequestAoCriarUsuarioInvalido() throws Exception {
+        Usuario usuario = new Usuario("", "email@email.com", "senha123");
 
-        ResponseEntity<Usuario> response = restTemplate.postForEntity(
-                url("/api/usuarios"),
-                usuario,
-                Usuario.class
-        );
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertNotNull(response.getBody().getId());
-        assertEquals("Giulia", response.getBody().getNome());
-        assertNull(response.getBody().getSenha());
+        mockMvc.perform(post("/api/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(usuario)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void naoDeveCriarUsuarioSemNome() {
-        Usuario usuario = new Usuario("", "email@email.com", "123");
+    void deveRetornarBadRequestAoCriarUsuarioComEmailDuplicado() throws Exception {
+        usuarioService.salvar(new Usuario("Giulia", "giulia@email.com", "senha123"));
 
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                url("/api/usuarios"),
-                usuario,
-                String.class
-        );
+        Usuario duplicado = new Usuario("Outra", "giulia@email.com", "outraSenha");
 
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        mockMvc.perform(post("/api/usuarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(duplicado)))
+                .andExpect(status().isBadRequest());
+
+        assertEquals(1, usuarioRepository.count());
     }
 
     @Test
-    void naoDeveCriarUsuarioComEmailDuplicado() {
-        Usuario usuario = new Usuario("Giulia", "giulia@email.com", "123");
+    void deveListarUsuariosSemExporSenhas() throws Exception {
+        usuarioService.salvar(new Usuario("Giulia", "giulia@email.com", "senha123"));
+        usuarioService.salvar(new Usuario("Ana", "ana@email.com", "senha456"));
 
-        restTemplate.postForEntity(url("/api/usuarios"), usuario, Usuario.class);
-
-        Usuario duplicado = new Usuario("Outra", "giulia@email.com", "456");
-
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                url("/api/usuarios"),
-                duplicado,
-                String.class
-        );
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        mockMvc.perform(get("/api/usuarios"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].senha").doesNotExist())
+                .andExpect(jsonPath("$[1].senha").doesNotExist());
     }
 
     @Test
-    void deveFazerLogin() {
-        Usuario usuario = new Usuario("Giulia", "giulia@email.com", "123");
+    void deveBuscarUsuarioPorIdSemExporSenha() throws Exception {
+        Usuario salvo = usuarioService.salvar(new Usuario("Giulia", "giulia@email.com", "senha123"));
 
-        restTemplate.postForEntity(url("/api/usuarios"), usuario, Usuario.class);
-
-        Usuario login = new Usuario(null, "giulia@email.com", "123");
-
-        ResponseEntity<Usuario> response = restTemplate.postForEntity(
-                url("/api/usuarios/login"),
-                login,
-                Usuario.class
-        );
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("giulia@email.com", response.getBody().getEmail());
-        assertNull(response.getBody().getSenha());
+        mockMvc.perform(get("/api/usuarios/" + salvo.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nome").value("Giulia"))
+                .andExpect(jsonPath("$.senha").doesNotExist());
     }
 
     @Test
-    void naoDeveFazerLoginComSenhaErrada() {
-        Usuario usuario = new Usuario("Giulia", "giulia@email.com", "123");
-
-        restTemplate.postForEntity(url("/api/usuarios"), usuario, Usuario.class);
-
-        Usuario loginErrado = new Usuario(null, "giulia@email.com", "errada");
-
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                url("/api/usuarios/login"),
-                loginErrado,
-                String.class
-        );
-
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    void deveRetornarNotFoundAoBuscarUsuarioInexistente() throws Exception {
+        mockMvc.perform(get("/api/usuarios/id-inexistente"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    void deveListarUsuarios() {
-        restTemplate.postForEntity(
-                url("/api/usuarios"),
-                new Usuario("Nome", "email@email.com", "123"),
-                Usuario.class
-        );
+    void deveAtualizarUsuarioComSucesso() throws Exception {
+        Usuario salvo = usuarioService.salvar(new Usuario("Giulia", "giulia@email.com", "senha123"));
+        Usuario atualizado = new Usuario("Giulia Atualizada", "giulia.novo@email.com", "novaSenha");
 
-        ResponseEntity<Usuario[]> response = restTemplate.getForEntity(
-                url("/api/usuarios"),
-                Usuario[].class
-        );
+        mockMvc.perform(put("/api/usuarios/" + salvo.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(atualizado)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nome").value("Giulia Atualizada"))
+                .andExpect(jsonPath("$.email").value("giulia.novo@email.com"))
+                .andExpect(jsonPath("$.senha").doesNotExist());
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().length);
-        assertNull(response.getBody()[0].getSenha());
+        Usuario usuarioBanco = usuarioRepository.findById(salvo.getId()).orElseThrow();
+        assertEquals("Giulia Atualizada", usuarioBanco.getNome());
+        assertEquals("giulia.novo@email.com", usuarioBanco.getEmail());
     }
 
     @Test
-    void deveBuscarUsuarioPorId() {
-        ResponseEntity<Usuario> criado = restTemplate.postForEntity(
-                url("/api/usuarios"),
-                new Usuario("Nome", "email@email.com", "123"),
-                Usuario.class
-        );
+    void deveRetornarBadRequestAoAtualizarUsuarioInvalido() throws Exception {
+        Usuario salvo = usuarioService.salvar(new Usuario("Giulia", "giulia@email.com", "senha123"));
+        Usuario invalido = new Usuario("", "novo@email.com", "senha123");
 
-        assertNotNull(criado.getBody());
-
-        ResponseEntity<Usuario> response = restTemplate.getForEntity(
-                url("/api/usuarios/" + criado.getBody().getId()),
-                Usuario.class
-        );
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("email@email.com", response.getBody().getEmail());
-        assertNull(response.getBody().getSenha());
+        mockMvc.perform(put("/api/usuarios/" + salvo.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalido)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void deveRetornar404AoBuscarUsuarioInexistente() {
-        ResponseEntity<String> response = restTemplate.getForEntity(
-                url("/api/usuarios/id-invalido"),
-                String.class
-        );
+    void deveRetornarNotFoundAoAtualizarUsuarioInexistente() throws Exception {
+        Usuario usuario = new Usuario("Giulia", "giulia@email.com", "senha123");
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        mockMvc.perform(put("/api/usuarios/id-inexistente")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(usuario)))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    void deveAtualizarUsuario() {
-        ResponseEntity<Usuario> criado = restTemplate.postForEntity(
-                url("/api/usuarios"),
-                new Usuario("Nome", "email@email.com", "123"),
-                Usuario.class
-        );
+    void deveDeletarUsuarioComSucesso() throws Exception {
+        Usuario salvo = usuarioService.salvar(new Usuario("Giulia", "giulia@email.com", "senha123"));
 
-        assertNotNull(criado.getBody());
+        mockMvc.perform(delete("/api/usuarios/" + salvo.getId()))
+                .andExpect(status().isNoContent());
 
-        Usuario atualizado = new Usuario("Novo Nome", "novo@email.com", "456");
-
-        HttpEntity<Usuario> request = new HttpEntity<>(atualizado);
-
-        ResponseEntity<Usuario> response = restTemplate.exchange(
-                url("/api/usuarios/" + criado.getBody().getId()),
-                HttpMethod.PUT,
-                request,
-                Usuario.class
-        );
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("Novo Nome", response.getBody().getNome());
-        assertEquals("novo@email.com", response.getBody().getEmail());
-        assertNull(response.getBody().getSenha());
+        assertTrue(usuarioRepository.findById(salvo.getId()).isEmpty());
     }
 
     @Test
-    void deveRetornar404AoAtualizarUsuarioInexistente() {
-        Usuario atualizado = new Usuario("Novo Nome", "novo@email.com", "456");
-
-        HttpEntity<Usuario> request = new HttpEntity<>(atualizado);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                url("/api/usuarios/id-invalido"),
-                HttpMethod.PUT,
-                request,
-                String.class
-        );
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    void deveRetornarNotFoundAoDeletarUsuarioInexistente() throws Exception {
+        mockMvc.perform(delete("/api/usuarios/id-inexistente"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    void deveDeletarUsuario() {
-        ResponseEntity<Usuario> criado = restTemplate.postForEntity(
-                url("/api/usuarios"),
-                new Usuario("Nome", "email@email.com", "123"),
-                Usuario.class
-        );
+    void deveFazerLoginComSucessoSemExporSenha() throws Exception {
+        usuarioService.salvar(new Usuario("Giulia", "giulia@email.com", "senha123"));
 
-        assertNotNull(criado.getBody());
+        Usuario login = new Usuario(null, "giulia@email.com", "senha123");
 
-        ResponseEntity<Void> response = restTemplate.exchange(
-                url("/api/usuarios/" + criado.getBody().getId()),
-                HttpMethod.DELETE,
-                null,
-                Void.class
-        );
-
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-        assertTrue(usuarioRepository.findById(criado.getBody().getId()).isEmpty());
+        mockMvc.perform(post("/api/usuarios/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(login)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("giulia@email.com"))
+                .andExpect(jsonPath("$.senha").doesNotExist());
     }
 
     @Test
-    void naoDeveDeletarUsuarioInexistente() {
-        ResponseEntity<String> response = restTemplate.exchange(
-                url("/api/usuarios/id-invalido"),
-                HttpMethod.DELETE,
-                null,
-                String.class
-        );
+    void deveRetornarUnauthorizedQuandoLoginInvalido() throws Exception {
+        usuarioService.salvar(new Usuario("Giulia", "giulia@email.com", "senha123"));
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        Usuario login = new Usuario(null, "giulia@email.com", "senhaErrada");
+
+        mockMvc.perform(post("/api/usuarios/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(login)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("Email ou senha inválidos"));
     }
 }
