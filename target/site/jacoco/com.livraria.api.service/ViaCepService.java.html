@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ViaCepService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Projeto Livraria</a> &gt; <a href="index.source.html" class="el_package">com.livraria.api.service</a> &gt; <span class="el_source">ViaCepService.java</span></div><h1>ViaCepService.java</h1><pre class="source lang-java linenums">package com.livraria.api.service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.livraria.entity.ViaCepResponse;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+
+@Service
+public class ViaCepService {
+
+<span class="pc" id="L15">    private String baseUrl = &quot;https://viacep.com.br/ws/&quot;;</span>
+
+    private final OkHttpClient httpClient;
+    private final ObjectMapper objectMapper;
+
+<span class="fc" id="L20">    public ViaCepService() {</span>
+<span class="fc" id="L21">        this.httpClient = new OkHttpClient();</span>
+<span class="fc" id="L22">        this.objectMapper = new ObjectMapper();</span>
+<span class="fc" id="L23">    }</span>
+
+<span class="nc" id="L25">    public ViaCepService(OkHttpClient httpClient) {</span>
+<span class="nc" id="L26">        this.httpClient = httpClient;</span>
+<span class="nc" id="L27">        this.objectMapper = new ObjectMapper();</span>
+<span class="nc" id="L28">    }</span>
+
+    public void setBaseUrl(String baseUrl) {
+<span class="fc" id="L31">        this.baseUrl = baseUrl;</span>
+<span class="fc" id="L32">    }</span>
+
+    public ViaCepResponse buscarCep(String cep) throws IOException {
+
+<span class="fc" id="L36">        String cepLimpo = cep.replaceAll(&quot;[^0-9]&quot;, &quot;&quot;);</span>
+
+<span class="pc bpc" id="L38" title="1 of 2 branches missed.">        if (cepLimpo.length() != 8) {</span>
+<span class="nc" id="L39">            throw new IllegalArgumentException(&quot;CEP deve conter 8 dígitos&quot;);</span>
+        }
+
+<span class="fc" id="L42">        String url = baseUrl + cepLimpo + &quot;/json/&quot;;</span>
+
+<span class="fc" id="L44">        Request request = new Request.Builder()</span>
+<span class="fc" id="L45">                .url(url)</span>
+<span class="fc" id="L46">                .get()</span>
+<span class="fc" id="L47">                .build();</span>
+
+<span class="fc" id="L49">        try (Response response = httpClient.newCall(request).execute()) {</span>
+
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">            if (!response.isSuccessful()) {</span>
+<span class="nc" id="L52">                throw new IOException(&quot;Erro ao consultar CEP&quot;);</span>
+            }
+
+<span class="fc" id="L55">            String responseBody = response.body().string();</span>
+
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            if (responseBody.contains(&quot;\&quot;erro\&quot;: true&quot;)</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">                    || responseBody.contains(&quot;\&quot;erro\&quot;:true&quot;)</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">                    || responseBody.contains(&quot;\&quot;erro\&quot;:\&quot;true\&quot;&quot;)</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">                    || responseBody.contains(&quot;\&quot;erro\&quot;: \&quot;true\&quot;&quot;)) {</span>
+<span class="fc" id="L61">                throw new IOException(&quot;CEP não encontrado&quot;);</span>
+            }
+
+<span class="fc" id="L64">            return objectMapper.readValue(responseBody, ViaCepResponse.class);</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

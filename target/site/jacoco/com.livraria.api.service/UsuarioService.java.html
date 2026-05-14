@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Projeto Livraria</a> &gt; <a href="index.source.html" class="el_package">com.livraria.api.service</a> &gt; <span class="el_source">UsuarioService.java</span></div><h1>UsuarioService.java</h1><pre class="source lang-java linenums">package com.livraria.api.service;
+
+import com.livraria.api.repository.UsuarioRepository;
+import com.livraria.entity.Usuario;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L13">public class UsuarioService {</span>
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+<span class="fc" id="L18">    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();</span>
+
+    public Usuario salvar(Usuario usuario) {
+<span class="fc" id="L21">        validarCadastro(usuario);</span>
+
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {</span>
+<span class="fc" id="L24">            throw new IllegalArgumentException(&quot;Email já cadastrado&quot;);</span>
+        }
+
+<span class="fc" id="L27">        usuario.setSenha(encoder.encode(usuario.getSenha()));</span>
+
+<span class="fc" id="L29">        return usuarioRepository.save(usuario);</span>
+    }
+
+    public List&lt;Usuario&gt; listar() {
+<span class="fc" id="L33">        return usuarioRepository.findAll();</span>
+    }
+
+    public Optional&lt;Usuario&gt; buscarPorId(String id) {
+<span class="fc" id="L37">        return usuarioRepository.findById(id);</span>
+    }
+
+    public Optional&lt;Usuario&gt; atualizar(String id, Usuario usuarioAtualizado) {
+<span class="fc" id="L41">        return usuarioRepository.findById(id).map(usuario -&gt; {</span>
+
+<span class="fc" id="L43">            validarAtualizacao(usuarioAtualizado);</span>
+
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">            if (!usuario.getEmail().equals(usuarioAtualizado.getEmail())</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">                    &amp;&amp; usuarioRepository.findByEmail(usuarioAtualizado.getEmail()).isPresent()) {</span>
+<span class="nc" id="L47">                throw new IllegalArgumentException(&quot;Email já cadastrado&quot;);</span>
+            }
+
+<span class="fc" id="L50">            usuario.setNome(usuarioAtualizado.getNome());</span>
+<span class="fc" id="L51">            usuario.setEmail(usuarioAtualizado.getEmail());</span>
+<span class="fc" id="L52">            usuario.setCep(usuarioAtualizado.getCep());</span>
+<span class="fc" id="L53">            usuario.setEndereco(usuarioAtualizado.getEndereco());</span>
+<span class="fc" id="L54">            usuario.setCidade(usuarioAtualizado.getCidade());</span>
+<span class="fc" id="L55">            usuario.setEstado(usuarioAtualizado.getEstado());</span>
+
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">            if (usuarioAtualizado.getSenha() != null</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">                    &amp;&amp; !usuarioAtualizado.getSenha().isBlank()) {</span>
+<span class="fc" id="L59">                usuario.setSenha(encoder.encode(usuarioAtualizado.getSenha()));</span>
+            }
+
+<span class="fc" id="L62">            return usuarioRepository.save(usuario);</span>
+        });
+    }
+
+    public boolean deletar(String id) {
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (usuarioRepository.existsById(id)) {</span>
+<span class="fc" id="L68">            usuarioRepository.deleteById(id);</span>
+<span class="fc" id="L69">            return true;</span>
+        }
+
+<span class="fc" id="L72">        return false;</span>
+    }
+
+    public Optional&lt;Usuario&gt; login(String email, String senha) {
+<span class="pc bpc" id="L76" title="4 of 8 branches missed.">        if (email == null || email.isBlank() || senha == null || senha.isBlank()) {</span>
+<span class="nc" id="L77">            return Optional.empty();</span>
+        }
+
+<span class="fc" id="L80">        Optional&lt;Usuario&gt; usuario = usuarioRepository.findByEmail(email);</span>
+
+<span class="fc bfc" id="L82" title="All 4 branches covered.">        if (usuario.isPresent() &amp;&amp; encoder.matches(senha, usuario.get().getSenha())) {</span>
+<span class="fc" id="L83">            return usuario;</span>
+        }
+
+<span class="fc" id="L86">        return Optional.empty();</span>
+    }
+
+    private void validarCadastro(Usuario usuario) {
+<span class="fc" id="L90">        validarDadosBasicos(usuario);</span>
+
+<span class="pc bpc" id="L92" title="1 of 4 branches missed.">        if (usuario.getSenha() == null || usuario.getSenha().isBlank()) {</span>
+<span class="fc" id="L93">            throw new IllegalArgumentException(&quot;Senha obrigatória&quot;);</span>
+        }
+<span class="fc" id="L95">    }</span>
+
+    private void validarAtualizacao(Usuario usuario) {
+<span class="fc" id="L98">        validarDadosBasicos(usuario);</span>
+<span class="fc" id="L99">    }</span>
+
+    private void validarDadosBasicos(Usuario usuario) {
+<span class="pc bpc" id="L102" title="1 of 4 branches missed.">        if (usuario.getNome() == null || usuario.getNome().isBlank()) {</span>
+<span class="fc" id="L103">            throw new IllegalArgumentException(&quot;Nome obrigatório&quot;);</span>
+        }
+
+<span class="pc bpc" id="L106" title="1 of 4 branches missed.">        if (usuario.getEmail() == null || usuario.getEmail().isBlank()) {</span>
+<span class="fc" id="L107">            throw new IllegalArgumentException(&quot;Email obrigatório&quot;);</span>
+        }
+
+<span class="pc bpc" id="L110" title="1 of 4 branches missed.">        if (usuario.getCep() == null || usuario.getCep().isBlank()) {</span>
+<span class="fc" id="L111">            throw new IllegalArgumentException(&quot;CEP obrigatório&quot;);</span>
+        }
+
+<span class="pc bpc" id="L114" title="1 of 4 branches missed.">        if (usuario.getEndereco() == null || usuario.getEndereco().isBlank()) {</span>
+<span class="fc" id="L115">            throw new IllegalArgumentException(&quot;Endereço obrigatório&quot;);</span>
+        }
+
+<span class="pc bpc" id="L118" title="1 of 4 branches missed.">        if (usuario.getCidade() == null || usuario.getCidade().isBlank()) {</span>
+<span class="fc" id="L119">            throw new IllegalArgumentException(&quot;Cidade obrigatória&quot;);</span>
+        }
+
+<span class="pc bpc" id="L122" title="1 of 4 branches missed.">        if (usuario.getEstado() == null || usuario.getEstado().isBlank()) {</span>
+<span class="fc" id="L123">            throw new IllegalArgumentException(&quot;Estado obrigatório&quot;);</span>
+        }
+<span class="fc" id="L125">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

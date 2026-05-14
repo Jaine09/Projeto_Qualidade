@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.livraria.api.controller.LivroControllerTest
 -------------------------------------------------------------------------------
-Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 30.10 s -- in com.livraria.api.controller.LivroControllerTest
+Tests run: 15, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 57.99 s -- in com.livraria.api.controller.LivroControllerTest

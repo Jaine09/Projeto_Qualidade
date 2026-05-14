@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioRestController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Projeto Livraria</a> &gt; <a href="index.source.html" class="el_package">com.livraria.api.controller</a> &gt; <span class="el_source">UsuarioRestController.java</span></div><h1>UsuarioRestController.java</h1><pre class="source lang-java linenums">package com.livraria.api.controller;
+
+import com.livraria.api.service.UsuarioService;
+import com.livraria.entity.Usuario;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/api/usuarios&quot;)
+<span class="fc" id="L13">public class UsuarioRestController {</span>
+
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @PostMapping
+    public ResponseEntity&lt;?&gt; criar(@RequestBody Usuario usuario) {
+        try {
+<span class="fc" id="L21">            Usuario salvo = usuarioService.salvar(usuario);</span>
+<span class="fc" id="L22">            salvo.setSenha(null);</span>
+<span class="fc" id="L23">            return ResponseEntity.status(201).body(salvo);</span>
+<span class="fc" id="L24">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L25">            return ResponseEntity.badRequest().body(e.getMessage());</span>
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity&lt;List&lt;Usuario&gt;&gt; listar() {
+<span class="fc" id="L31">        List&lt;Usuario&gt; usuarios = usuarioService.listar();</span>
+
+<span class="fc" id="L33">        usuarios.forEach(usuario -&gt; usuario.setSenha(null));</span>
+
+<span class="fc" id="L35">        return ResponseEntity.ok(usuarios);</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; buscarPorId(@PathVariable String id) {
+<span class="fc" id="L40">        return usuarioService.buscarPorId(id)</span>
+<span class="fc" id="L41">                .map(usuario -&gt; {</span>
+<span class="fc" id="L42">                    usuario.setSenha(null);</span>
+<span class="fc" id="L43">                    return ResponseEntity.ok((Object) usuario);</span>
+                })
+<span class="fc" id="L45">                .orElse(ResponseEntity.status(404).body(&quot;Usuário não encontrado&quot;));</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; atualizar(
+            @PathVariable String id,
+            @RequestBody Usuario usuario
+    ) {
+        try {
+<span class="fc" id="L54">            return usuarioService.atualizar(id, usuario)</span>
+<span class="fc" id="L55">                    .map(usuarioAtualizado -&gt; {</span>
+<span class="fc" id="L56">                        usuarioAtualizado.setSenha(null);</span>
+<span class="fc" id="L57">                        return ResponseEntity.ok((Object) usuarioAtualizado);</span>
+                    })
+<span class="fc" id="L59">                    .orElse(ResponseEntity.status(404).body(&quot;Usuário não encontrado&quot;));</span>
+<span class="fc" id="L60">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L61">            return ResponseEntity.badRequest().body(e.getMessage());</span>
+        }
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; deletar(@PathVariable String id) {
+<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (usuarioService.deletar(id)) {</span>
+<span class="fc" id="L68">            return ResponseEntity.noContent().build();</span>
+        }
+
+<span class="fc" id="L71">        return ResponseEntity.status(404).body(&quot;Usuário não encontrado&quot;);</span>
+    }
+
+    @PostMapping(&quot;/login&quot;)
+    public ResponseEntity&lt;?&gt; login(@RequestBody Usuario usuario) {
+<span class="fc" id="L76">        return usuarioService.login(usuario.getEmail(), usuario.getSenha())</span>
+<span class="fc" id="L77">                .map(usuarioLogado -&gt; {</span>
+<span class="fc" id="L78">                    usuarioLogado.setSenha(null);</span>
+<span class="fc" id="L79">                    return ResponseEntity.ok((Object) usuarioLogado);</span>
+                })
+<span class="fc" id="L81">                .orElse(ResponseEntity.status(401).body(&quot;Email ou senha inválidos&quot;));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

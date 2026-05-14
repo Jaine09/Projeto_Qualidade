@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LivroController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Projeto Livraria</a> &gt; <a href="index.source.html" class="el_package">com.livraria.front.controller</a> &gt; <span class="el_source">LivroController.java</span></div><h1>LivroController.java</h1><pre class="source lang-java linenums">package com.livraria.front.controller;
+
+import com.livraria.entity.Livro;
+import com.livraria.entity.Usuario;
+import com.livraria.api.service.LivroService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import jakarta.servlet.http.HttpSession;
+
+@Controller
+<span class="fc" id="L15">public class LivroController {</span>
+
+    @Autowired
+    private LivroService livroService;
+
+    private Usuario getUsuarioLogado(HttpSession session) {
+<span class="fc" id="L21">        return (Usuario) session.getAttribute(&quot;usuarioLogado&quot;);</span>
+    }
+
+    @GetMapping(&quot;/home&quot;)
+    public String home(Model model, HttpSession session) {
+<span class="fc" id="L26">        Usuario usuario = getUsuarioLogado(session);</span>
+
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (usuario == null) {</span>
+<span class="fc" id="L29">            return &quot;redirect:/login&quot;;</span>
+        }
+
+<span class="fc" id="L32">        model.addAttribute(&quot;livros&quot;, livroService.listarPorUsuario(usuario.getId()));</span>
+<span class="fc" id="L33">        return &quot;pagina-inicial&quot;;</span>
+    }
+
+    @GetMapping(&quot;/novo&quot;)
+    public String novoLivro(Model model, HttpSession session) {
+<span class="fc" id="L38">        Usuario usuario = getUsuarioLogado(session);</span>
+
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (usuario == null) {</span>
+<span class="fc" id="L41">            return &quot;redirect:/login&quot;;</span>
+        }
+
+<span class="fc" id="L44">        model.addAttribute(&quot;livro&quot;, new Livro());</span>
+<span class="fc" id="L45">        return &quot;cadastrarLivro&quot;;</span>
+    }
+
+    @PostMapping(&quot;/salvar&quot;)
+    public String salvar(Livro livro,
+                         HttpSession session,
+                         Model model) {
+
+<span class="fc" id="L53">        Usuario usuario = getUsuarioLogado(session);</span>
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (usuario == null) {</span>
+<span class="fc" id="L56">            return &quot;redirect:/login&quot;;</span>
+        }
+
+        try {
+<span class="fc" id="L60">            livro.setUsuarioId(usuario.getId());</span>
+<span class="fc" id="L61">            livroService.salvar(livro);</span>
+
+<span class="fc" id="L63">            return &quot;redirect:/home&quot;;</span>
+
+<span class="fc" id="L65">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L66">            model.addAttribute(&quot;erro&quot;, e.getMessage());</span>
+<span class="fc" id="L67">            model.addAttribute(&quot;livro&quot;, livro);</span>
+
+<span class="fc" id="L69">            return &quot;cadastrarLivro&quot;;</span>
+        }
+    }
+
+    @GetMapping(&quot;/editar/{id}&quot;)
+    public String editar(@PathVariable String id,
+                         Model model,
+                         HttpSession session) {
+
+<span class="fc" id="L78">        Usuario usuario = getUsuarioLogado(session);</span>
+
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (usuario == null) {</span>
+<span class="fc" id="L81">            return &quot;redirect:/login&quot;;</span>
+        }
+
+<span class="fc" id="L84">        return livroService.buscarPorId(id)</span>
+<span class="fc" id="L85">                .filter(livro -&gt; livro.getUsuarioId().equals(usuario.getId()))</span>
+<span class="fc" id="L86">                .map(livro -&gt; {</span>
+<span class="fc" id="L87">                    model.addAttribute(&quot;livro&quot;, livro);</span>
+<span class="fc" id="L88">                    return &quot;editarLivros&quot;;</span>
+                })
+<span class="fc" id="L90">                .orElse(&quot;redirect:/home&quot;);</span>
+    }
+
+    @PostMapping(&quot;/editar/{id}&quot;)
+    public String atualizar(@PathVariable String id,
+                            Livro livroAtualizado,
+                            HttpSession session,
+                            Model model) {
+
+<span class="fc" id="L99">        Usuario usuario = getUsuarioLogado(session);</span>
+
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (usuario == null) {</span>
+<span class="fc" id="L102">            return &quot;redirect:/login&quot;;</span>
+        }
+
+        try {
+<span class="fc" id="L106">            livroService.buscarPorId(id)</span>
+<span class="fc" id="L107">                    .filter(livro -&gt; livro.getUsuarioId().equals(usuario.getId()))</span>
+<span class="fc" id="L108">                    .ifPresent(livro -&gt; {</span>
+<span class="fc" id="L109">                        livroAtualizado.setUsuarioId(usuario.getId());</span>
+<span class="fc" id="L110">                        livroService.atualizar(id, livroAtualizado);</span>
+<span class="fc" id="L111">                    });</span>
+
+<span class="fc" id="L113">            return &quot;redirect:/home&quot;;</span>
+
+<span class="fc" id="L115">        } catch (IllegalArgumentException e) {</span>
+<span class="fc" id="L116">            livroAtualizado.setId(id);</span>
+<span class="fc" id="L117">            livroAtualizado.setUsuarioId(usuario.getId());</span>
+
+<span class="fc" id="L119">            model.addAttribute(&quot;erro&quot;, e.getMessage());</span>
+<span class="fc" id="L120">            model.addAttribute(&quot;livro&quot;, livroAtualizado);</span>
+
+<span class="fc" id="L122">            return &quot;editarLivros&quot;;</span>
+        }
+    }
+
+    @PostMapping(&quot;/deletar/{id}&quot;)
+    public String deletar(@PathVariable String id,
+                          HttpSession session) {
+
+<span class="fc" id="L130">        Usuario usuario = getUsuarioLogado(session);</span>
+
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        if (usuario == null) {</span>
+<span class="fc" id="L133">            return &quot;redirect:/login&quot;;</span>
+        }
+
+<span class="fc" id="L136">        livroService.buscarPorId(id)</span>
+<span class="fc" id="L137">                .filter(livro -&gt; livro.getUsuarioId().equals(usuario.getId()))</span>
+<span class="fc" id="L138">                .ifPresent(livro -&gt; livroService.deletar(id));</span>
+
+<span class="fc" id="L140">        return &quot;redirect:/home&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

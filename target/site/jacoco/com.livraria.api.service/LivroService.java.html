@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LivroService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Projeto Livraria</a> &gt; <a href="index.source.html" class="el_package">com.livraria.api.service</a> &gt; <span class="el_source">LivroService.java</span></div><h1>LivroService.java</h1><pre class="source lang-java linenums">package com.livraria.api.service;
+
+import com.livraria.entity.Livro;
+import com.livraria.api.repository.LivroRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L12">public class LivroService {</span>
+
+    @Autowired
+    private LivroRepository livroRepository;
+
+    public Livro salvar(Livro livro) {
+<span class="fc" id="L18">        validar(livro);</span>
+<span class="fc" id="L19">        return livroRepository.save(livro);</span>
+    }
+
+    public List&lt;Livro&gt; listarPorUsuario(String usuarioId) {
+<span class="fc" id="L23">        return livroRepository.findByUsuarioId(usuarioId);</span>
+    }
+
+    public Optional&lt;Livro&gt; buscarPorId(String id) {
+<span class="fc" id="L27">        return livroRepository.findById(id);</span>
+    }
+
+    public Optional&lt;Livro&gt; atualizar(String id, Livro dados) {
+<span class="fc" id="L31">        validar(dados);</span>
+
+<span class="fc" id="L33">        return livroRepository.findById(id).map(livro -&gt; {</span>
+<span class="fc" id="L34">            atualizarCampos(livro, dados);</span>
+<span class="fc" id="L35">            return livroRepository.save(livro);</span>
+        });
+    }
+
+    public boolean deletar(String id) {
+<span class="fc" id="L40">        return livroRepository.findById(id)</span>
+<span class="fc" id="L41">                .map(livro -&gt; {</span>
+<span class="fc" id="L42">                    livroRepository.delete(livro);</span>
+<span class="fc" id="L43">                    return true;</span>
+                })
+<span class="fc" id="L45">                .orElse(false);</span>
+    }
+
+    private void atualizarCampos(Livro livro, Livro dados) {
+<span class="fc" id="L49">        livro.setTitulo(dados.getTitulo());</span>
+<span class="fc" id="L50">        livro.setAutor(dados.getAutor());</span>
+<span class="fc" id="L51">        livro.setGenero(dados.getGenero());</span>
+<span class="fc" id="L52">        livro.setDescricao(dados.getDescricao());</span>
+<span class="fc" id="L53">        livro.setImagem(dados.getImagem());</span>
+<span class="fc" id="L54">    }</span>
+
+    private void validar(Livro livro) {
+<span class="pc bpc" id="L57" title="1 of 4 branches missed.">        if (livro.getTitulo() == null || livro.getTitulo().isBlank()) {</span>
+<span class="fc" id="L58">            throw new IllegalArgumentException(&quot;Título obrigatório&quot;);</span>
+        }
+
+<span class="pc bpc" id="L61" title="1 of 4 branches missed.">        if (livro.getUsuarioId() == null || livro.getUsuarioId().isBlank()) {</span>
+<span class="fc" id="L62">            throw new IllegalArgumentException(&quot;Usuário obrigatório&quot;);</span>
+        }
+<span class="fc" id="L64">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
