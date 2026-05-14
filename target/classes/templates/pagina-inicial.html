@@ -58,14 +58,16 @@
           >
             <div class="frame-div" th:each="livro : ${livros}">
               <img
-                class="add-image-icon"
-                alt=""
-                th:src="@{/img/adicionarImagem.png}"
+                class="book-cover"
+                alt="Imagem do livro"
+                th:src="${#strings.isEmpty(livro.imagem)} ? @{/img/adicionarImagem.png} : ${livro.imagem}"
               />
 
               <div class="ttulo-parent">
                 <b class="ttulo" th:text="${livro.titulo}">Título</b>
+                <div class="autor" th:text="${livro.autor}">Autor</div>
                 <div class="gnero" th:text="${livro.genero}">Gênero</div>
+                <p class="descricao" th:text="${livro.descricao}">Descrição</p>
               </div>
 
               <div class="actions-icons">

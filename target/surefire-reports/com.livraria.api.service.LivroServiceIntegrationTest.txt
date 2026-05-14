@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.livraria.api.service.LivroServiceIntegrationTest
 -------------------------------------------------------------------------------
-Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.44 s -- in com.livraria.api.service.LivroServiceIntegrationTest
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.560 s -- in com.livraria.api.service.LivroServiceIntegrationTest
