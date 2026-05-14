@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.livraria.api.service.UsuarioServiceIntegrationTest" time="6.344" tests="12" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.livraria.api.service.ViaCepServiceVcrTest" time="0.206" tests="2" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="22"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -68,70 +68,6 @@
     <property name="java.class.version" value="66.0"/>
     <property name="LOGGED_APPLICATION_NAME" value="[projeto-livraria] "/>
   </properties>
-  <testcase name="deveDeletarUsuario" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.267">
-    <system-out><![CDATA[2026-05-13T23:18:05.145-03:00  INFO 22112 --- [projeto-livraria] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.livraria.api.service.UsuarioServiceIntegrationTest]: UsuarioServiceIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2026-05-13T23:18:05.146-03:00  INFO 22112 --- [projeto-livraria] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.livraria.LivrariaApplication for test class com.livraria.api.service.UsuarioServiceIntegrationTest
-2026-05-13T23:18:05.150-03:00  INFO 22112 --- [projeto-livraria] [           main] tc.mongo:6.0                             : Creating container for image: mongo:6.0
-2026-05-13T23:18:05.549-03:00  INFO 22112 --- [projeto-livraria] [           main] tc.mongo:6.0                             : Container mongo:6.0 is starting: 6e8b8a483163779babd90db6879c804305f4d6fd328823c4c47f666264dc1578
-2026-05-13T23:18:07.070-03:00  INFO 22112 --- [projeto-livraria] [           main] tc.mongo:6.0                             : Container mongo:6.0 started in PT1.9199033S
-2026-05-13T23:18:09.122-03:00  INFO 22112 --- [projeto-livraria] [           main] o.s.b.d.r.RestartApplicationListener     : Restart disabled due to context in which it is running
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
- :: Spring Boot ::                (v3.2.0)
-
-2026-05-13T23:18:09.148-03:00  INFO 22112 --- [projeto-livraria] [           main] c.l.a.s.UsuarioServiceIntegrationTest    : Starting UsuarioServiceIntegrationTest using Java 22.0.2 with PID 22112 (started by giuli in C:\Users\giuli\Downloads\Projeto QA\Projeto_Qualidade)
-2026-05-13T23:18:09.148-03:00  INFO 22112 --- [projeto-livraria] [           main] c.l.a.s.UsuarioServiceIntegrationTest    : No active profile set, falling back to 1 default profile: "default"
-2026-05-13T23:18:09.173-03:00  INFO 22112 --- [projeto-livraria] [localhost:59118] org.mongodb.driver.cluster               : Exception in monitor thread while connecting to server localhost:59118
-
-com.mongodb.MongoSocketOpenException: Exception opening socket
-	at com.mongodb.internal.connection.SocketStream.lambda$open$0(SocketStream.java:84) ~[mongodb-driver-core-4.11.1.jar:na]
-	at java.base/java.util.Optional.orElseThrow(Optional.java:403) ~[na:na]
-	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:84) ~[mongodb-driver-core-4.11.1.jar:na]
-	at com.mongodb.internal.connection.InternalStreamConnection.open(InternalStreamConnection.java:211) ~[mongodb-driver-core-4.11.1.jar:na]
-	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:196) ~[mongodb-driver-core-4.11.1.jar:na]
-	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:156) ~[mongodb-driver-core-4.11.1.jar:na]
-	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
-Caused by: java.net.ConnectException: Connection refused: getsockopt
-	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
-	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682) ~[na:na]
-	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542) ~[na:na]
-	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592) ~[na:na]
-	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
-	at java.base/java.net.Socket.connect(Socket.java:752) ~[na:na]
-	at com.mongodb.internal.connection.SocketStreamHelper.initialize(SocketStreamHelper.java:76) ~[mongodb-driver-core-4.11.1.jar:na]
-	at com.mongodb.internal.connection.SocketStream.initializeSocket(SocketStream.java:104) ~[mongodb-driver-core-4.11.1.jar:na]
-	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:78) ~[mongodb-driver-core-4.11.1.jar:na]
-	... 4 common frames omitted
-
-2026-05-13T23:18:09.419-03:00  INFO 22112 --- [projeto-livraria] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
-2026-05-13T23:18:09.436-03:00  INFO 22112 --- [projeto-livraria] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 2 MongoDB repository interfaces.
-2026-05-13T23:18:09.570-03:00  INFO 22112 --- [projeto-livraria] [           main] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "4.11.1"}, "os": {"type": "Windows", "name": "Windows 11", "architecture": "amd64", "version": "10.0"}, "platform": "Java/Oracle Corporation/22.0.2+9-70"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=null, transportSettings=null, streamFactoryFactory=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@318a2e9f, com.mongodb.Jep395RecordCodecProvider@7536dc3b, com.mongodb.KotlinCodecProvider@2f0fa056]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[localhost:59139], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null}
-2026-05-13T23:18:09.577-03:00  INFO 22112 --- [projeto-livraria] [localhost:59139] org.mongodb.driver.cluster               : Monitor thread successfully connected to server with description ServerDescription{address=localhost:59139, type=REPLICA_SET_PRIMARY, state=CONNECTED, ok=true, minWireVersion=0, maxWireVersion=17, maxDocumentSize=16777216, logicalSessionTimeoutMinutes=30, roundTripTimeNanos=5615200, setName='docker-rs', canonicalAddress=6e8b8a483163:27017, hosts=[6e8b8a483163:27017], passives=[], arbiters=[], primary='6e8b8a483163:27017', tagSet=TagSet{[]}, electionId=7fffffff0000000000000001, setVersion=1, topologyVersion=TopologyVersion{processId=6a0530de85f9330ebc28d070, counter=6}, lastWriteDate=Wed May 13 23:18:09 BRT 2026, lastUpdateTimeNanos=2570689762000}
-2026-05-13T23:18:09.631-03:00  WARN 22112 --- [projeto-livraria] [           main] .s.s.UserDetailsServiceAutoConfiguration : 
-
-Using generated security password: 3ebc0a61-d4a5-461c-a141-122396e02284
-
-This generated password is for development use only. Your security configuration must be updated before running your application in production.
-
-2026-05-13T23:18:09.639-03:00  INFO 22112 --- [projeto-livraria] [           main] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
-2026-05-13T23:18:09.684-03:00  INFO 22112 --- [projeto-livraria] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@103a6245, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1c828716, org.springframework.security.web.context.SecurityContextHolderFilter@45aca057, org.springframework.security.web.header.HeaderWriterFilter@4ffc5d53, org.springframework.web.filter.CorsFilter@566a0068, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@611aa153, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6722f4bf, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@184ed41, org.springframework.security.web.access.ExceptionTranslationFilter@1b83b7b8, org.springframework.security.web.access.intercept.AuthorizationFilter@374c1eaa]
-2026-05-13T23:18:09.754-03:00  INFO 22112 --- [projeto-livraria] [           main] c.l.a.s.UsuarioServiceIntegrationTest    : Started UsuarioServiceIntegrationTest in 0.632 seconds (process running for 86.436)
-]]></system-out>
-  </testcase>
-  <testcase name="naoDeveFazerLoginComSenhaErrada" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.212"/>
-  <testcase name="naoDeveSalvarUsuarioComEmailDuplicado" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.107"/>
-  <testcase name="naoDeveFazerLoginComEmailInexistente" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.022"/>
-  <testcase name="naoDeveSalvarUsuarioSemNome" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.009"/>
-  <testcase name="deveFazerLoginComSucesso" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.181"/>
-  <testcase name="deveSalvarUsuarioComSucesso" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.112"/>
-  <testcase name="deveAtualizarUsuario" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.208"/>
-  <testcase name="naoDeveDeletarUsuarioInexistente" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.02"/>
-  <testcase name="naoDeveSalvarUsuarioSemEmail" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.008"/>
-  <testcase name="naoDeveSalvarUsuarioSemSenha" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.007"/>
-  <testcase name="naoDeveAtualizarUsuarioInexistente" classname="com.livraria.api.service.UsuarioServiceIntegrationTest" time="0.01"/>
+  <testcase name="deveBuscarCepComSucesso" classname="com.livraria.api.service.ViaCepServiceVcrTest" time="0.192"/>
+  <testcase name="deveRetornarErroParaCepInvalido" classname="com.livraria.api.service.ViaCepServiceVcrTest" time="0.011"/>
 </testsuite>

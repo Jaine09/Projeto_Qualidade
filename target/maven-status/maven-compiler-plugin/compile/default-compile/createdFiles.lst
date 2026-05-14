@@ -1,5 +1,6 @@
 com\livraria\api\repository\LivroRepository.class
 com\livraria\api\repository\UsuarioRepository.class
+com\livraria\api\service\ViaCepService.class
 com\livraria\api\service\LivroService.class
 com\livraria\LivrariaApplication.class
 com\livraria\front\controller\LivroController.class
