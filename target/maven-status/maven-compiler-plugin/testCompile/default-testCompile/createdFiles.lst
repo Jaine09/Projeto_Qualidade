@@ -1,9 +1,10 @@
 com\livraria\api\service\UsuarioServiceIntegrationTest.class
+com\livraria\api\service\LivroServiceIntegrationTest.class
+com\livraria\api\service\ViaCepServiceVcrTest.class
+com\livraria\api\util\VcrHelper.class
 com\livraria\api\controller\UsuarioRestControllerTest.class
 com\livraria\api\service\LivroServiceParametrizedTest.class
 com\livraria\api\service\UsuarioServiceParametrizedTest.class
 com\livraria\api\controller\LivroRestControllerTest.class
 com\livraria\api\controller\UsuarioControllerTest.class
-com\livraria\api\service\LivroServiceIntegrationTest.class
 com\livraria\api\controller\LivroControllerTest.class
-com\livraria\api\service\ViaCepServiceVcrTest.class

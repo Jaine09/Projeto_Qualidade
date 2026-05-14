@@ -2,13 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Cadastrar Livro</title>
+
     <link rel="stylesheet" th:href="@{/css/global.css}" />
     <link rel="stylesheet" th:href="@{/css/cadastrarLivro.css}" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
-    />
   </head>
   <body>
     <div class="tabbarcontainer">
@@ -16,6 +15,7 @@
         <a th:href="@{/home}" class="go-back-button">
           <img class="go-back-icon" alt="Voltar" th:src="@{/img/voltar.png}" />
         </a>
+
         <h3 class="cadastrar-livro">Cadastrar livro</h3>
       </div>
 
@@ -24,12 +24,23 @@
           <div class="rectangle-parent">
             <div class="form-content">
               <div class="top-section">
-                <div class="rectangle-group image-preview-box">
-                  <img
-                    class="add-image-icon"
-                    alt="Imagem do livro"
-                    th:src="@{/img/adicionarImagem.png}"
-                  />
+                <div class="rectangle-group">
+                  <div class="image-upload-section">
+                    <img
+                      id="previewImagem"
+                      class="book-preview"
+                      th:src="@{/img/adicionarImagem.png}"
+                      alt="Prévia da capa"
+                    />
+
+                    <input
+                      class="author-input"
+                      type="text"
+                      th:field="*{imagem}"
+                      id="imagemInput"
+                      placeholder="Cole a URL da capa do livro"
+                    />
+                  </div>
                 </div>
 
                 <div class="author-field-parent">
@@ -42,29 +53,24 @@
                       required
                     />
                   </div>
+
                   <div class="field-group">
                     <label class="label-text">Autor</label>
                     <input
                       class="author-input"
                       type="text"
                       th:field="*{autor}"
+                      required
                     />
                   </div>
+
                   <div class="field-group">
                     <label class="label-text">Gênero</label>
                     <input
                       class="author-input"
                       type="text"
                       th:field="*{genero}"
-                    />
-                  </div>
-                  <div class="field-group">
-                    <label class="label-text">URL da imagem</label>
-                    <input
-                      class="author-input"
-                      type="url"
-                      th:field="*{imagem}"
-                      placeholder="https://exemplo.com/imagem.jpg"
+                      required
                     />
                   </div>
                 </div>
@@ -72,11 +78,10 @@
 
               <div class="description-section">
                 <label class="label-text">Descrição</label>
-                <input
+                <textarea
                   class="description-input"
-                  type="text"
                   th:field="*{descricao}"
-                />
+                ></textarea>
               </div>
             </div>
 
@@ -89,5 +94,19 @@
         </section>
       </form>
     </div>
+    <script>
+      const imagemInput = document.getElementById("imagemInput");
+      const preview = document.getElementById("previewImagem");
+
+      imagemInput.addEventListener("input", () => {
+        const url = imagemInput.value.trim();
+
+        if (url !== "") {
+          preview.src = url;
+        } else {
+          preview.src = "/img/adicionarImagem.png";
+        }
+      });
+    </script>
   </body>
 </html>

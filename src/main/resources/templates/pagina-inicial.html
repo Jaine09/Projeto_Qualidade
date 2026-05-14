@@ -2,28 +2,30 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Minha Biblioteca</title>
+
     <link rel="stylesheet" th:href="@{/css/global.css}" />
     <link rel="stylesheet" th:href="@{/css/paginaInicial.css}" />
+
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
     />
   </head>
+
   <body>
     <div class="intro-to-journal">
       <div class="rectangle-parent">
-        <a
-          th:href="@{/logout}"
-          class="frame-wrapper"
-          style="text-decoration: none"
-        >
+        <a th:href="@{/logout}" class="frame-wrapper">
           <div class="abertura-da-porta-aberta-1-parent">
             <img
               class="abertura-da-porta-aberta-1-icon"
-              alt=""
+              alt="Sair"
               th:src="@{/img/sair.png}"
             />
+
             <div class="sair-wrapper">
               <b class="sair">Sair</b>
             </div>
@@ -37,41 +39,56 @@
         <div class="frame-parent">
           <div class="frame-group">
             <div class="rounded-rectangle-parent">
-              <input class="buscar" placeholder="Buscar" type="text" />
-              <img class="search-icon" alt="" th:src="@{/img/buscar.png}" />
+              <input
+                class="buscar"
+                id="buscarLivro"
+                placeholder="Buscar por título, gênero ou autor"
+                type="text"
+              />
+
+              <img
+                class="search-icon"
+                alt="Buscar"
+                th:src="@{/img/buscar.png}"
+              />
             </div>
 
             <div class="frame-container">
-              <a
-                th:href="@{/novo}"
-                class="rectangle-group"
-                style="text-decoration: none; display: inline-block"
-              >
+              <a th:href="@{/novo}" class="rectangle-group">
                 <b class="novo">Novo</b>
               </a>
             </div>
           </div>
 
-          <div
-            class="rectangle-container"
-            style="display: flex; flex-wrap: wrap; gap: 20px"
-          >
+          <div class="rectangle-container">
             <div class="frame-div" th:each="livro : ${livros}">
-              <img
-                class="book-cover"
-                alt="Imagem do livro"
-                th:src="${#strings.isEmpty(livro.imagem)} ? @{/img/adicionarImagem.png} : ${livro.imagem}"
-              />
+              <div class="book-cover-wrapper">
+                <img
+                  class="book-cover"
+                  alt="Capa do livro"
+                  th:src="${livro.imagem != null && !#strings.isEmpty(livro.imagem)}
+                                    ? ${livro.imagem}
+                                    : @{/img/adicionarImagem.png}"
+                />
+              </div>
 
               <div class="ttulo-parent">
                 <b class="ttulo" th:text="${livro.titulo}">Título</b>
+
                 <div class="autor" th:text="${livro.autor}">Autor</div>
+
                 <div class="gnero" th:text="${livro.genero}">Gênero</div>
-                <p class="descricao" th:text="${livro.descricao}">Descrição</p>
+
+                <p class="descricao" th:text="${livro.descricao}">
+                  Descrição do livro
+                </p>
               </div>
 
               <div class="actions-icons">
-                <a th:href="@{/editar/{id}(id=${livro.id})}">
+                <a
+                  th:href="@{/editar/{id}(id=${livro.id})}"
+                  class="icon-button"
+                >
                   <img
                     class="action-icon"
                     alt="Editar"
@@ -82,18 +99,8 @@
                 <form
                   th:action="@{/deletar/{id}(id=${livro.id})}"
                   method="post"
-                  style="display: inline"
                 >
-                  <button
-                    type="submit"
-                    onclick="return confirm('Tem certeza que deseja excluir?');"
-                    style="
-                      border: none;
-                      background: transparent;
-                      padding: 0;
-                      cursor: pointer;
-                    "
-                  >
+                  <button type="submit" class="icon-button">
                     <img
                       class="action-icon"
                       alt="Excluir"
@@ -103,11 +110,24 @@
                 </form>
               </div>
             </div>
-
-            <div class="custom-scrollbar"></div>
           </div>
         </div>
       </section>
     </div>
+
+    <script>
+      const busca = document.getElementById("buscarLivro");
+
+      busca.addEventListener("keyup", () => {
+        const valor = busca.value.toLowerCase();
+        const livros = document.querySelectorAll(".frame-div");
+
+        livros.forEach((livro) => {
+          const texto = livro.innerText.toLowerCase();
+
+          livro.style.display = texto.includes(valor) ? "flex" : "none";
+        });
+      });
+    </script>
   </body>
 </html>

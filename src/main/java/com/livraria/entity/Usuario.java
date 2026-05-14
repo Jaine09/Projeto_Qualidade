@@ -15,49 +15,116 @@ public class Usuario {
     private String email;
     private String senha;
 
+    private String cep;
+    private String endereco;
+    private String cidade;
+    private String estado;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Construtor padrão
     public Usuario() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Usuario(String nome, String email, String senha) {
+    public Usuario(String nome,
+                   String email,
+                   String senha,
+                   String cep,
+                   String endereco,
+                   String cidade,
+                   String estado) {
+
         this();
+
         this.nome = nome;
         this.email = email;
         this.senha = senha;
+        this.cep = cep;
+        this.endereco = endereco;
+        this.cidade = cidade;
+        this.estado = estado;
     }
 
-    // Getters e Setters
-    public String getId() { return id; }
+    // GETTERS E SETTERS
 
-    public void setId(String id) { this.id = id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getNome() { return nome; }
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
 
     public void setNome(String nome) {
         this.nome = nome;
         this.updatedAt = LocalDateTime.now();
     }
 
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 
     public void setEmail(String email) {
         this.email = email;
         this.updatedAt = LocalDateTime.now();
     }
 
-    public String getSenha() { return senha; }
+    public String getSenha() {
+        return senha;
+    }
 
     public void setSenha(String senha) {
         this.senha = senha;
         this.updatedAt = LocalDateTime.now();
     }
 
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public String getCep() {
+        return cep;
+    }
 
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setCep(String cep) {
+        this.cep = cep;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(String endereco) {
+        this.endereco = endereco;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 }

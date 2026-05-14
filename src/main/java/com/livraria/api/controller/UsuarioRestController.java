@@ -1,14 +1,12 @@
 package com.livraria.api.controller;
 
-import com.livraria.entity.Usuario;
 import com.livraria.api.service.UsuarioService;
-
+import com.livraria.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -31,7 +29,9 @@ public class UsuarioRestController {
     @GetMapping
     public ResponseEntity<List<Usuario>> listar() {
         List<Usuario> usuarios = usuarioService.listar();
-        usuarios.forEach(u -> u.setSenha(null));
+
+        usuarios.forEach(usuario -> usuario.setSenha(null));
+
         return ResponseEntity.ok(usuarios);
     }
 
@@ -40,21 +40,23 @@ public class UsuarioRestController {
         return usuarioService.buscarPorId(id)
                 .map(usuario -> {
                     usuario.setSenha(null);
-                    return ResponseEntity.ok(usuario);
+                    return ResponseEntity.ok((Object) usuario);
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.status(404).body("Usuário não encontrado"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable String id,
-                                       @RequestBody Usuario usuario) {
+    public ResponseEntity<?> atualizar(
+            @PathVariable String id,
+            @RequestBody Usuario usuario
+    ) {
         try {
             return usuarioService.atualizar(id, usuario)
                     .map(usuarioAtualizado -> {
                         usuarioAtualizado.setSenha(null);
-                        return ResponseEntity.ok(usuarioAtualizado);
+                        return ResponseEntity.ok((Object) usuarioAtualizado);
                     })
-                    .orElse(ResponseEntity.notFound().build());
+                    .orElse(ResponseEntity.status(404).body("Usuário não encontrado"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -66,22 +68,16 @@ public class UsuarioRestController {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(404).body("Usuário não encontrado");
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Usuario usuario) {
-        Optional<Usuario> usuarioEncontrado = usuarioService.login(
-                usuario.getEmail(),
-                usuario.getSenha()
-        );
-
-        if (usuarioEncontrado.isPresent()) {
-            Usuario usuarioLogado = usuarioEncontrado.get();
-            usuarioLogado.setSenha(null);
-            return ResponseEntity.ok(usuarioLogado);
-        }
-
-        return ResponseEntity.status(401).body("Email ou senha inválidos");
+        return usuarioService.login(usuario.getEmail(), usuario.getSenha())
+                .map(usuarioLogado -> {
+                    usuarioLogado.setSenha(null);
+                    return ResponseEntity.ok((Object) usuarioLogado);
+                })
+                .orElse(ResponseEntity.status(401).body("Email ou senha inválidos"));
     }
 }

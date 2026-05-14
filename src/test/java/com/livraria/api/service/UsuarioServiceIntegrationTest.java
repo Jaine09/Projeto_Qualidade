@@ -45,7 +45,7 @@ public class UsuarioServiceIntegrationTest {
 
     @Test
     void deveSalvarUsuarioComSucesso() {
-        Usuario usuario = new Usuario("Giulia", "giulia@email.com", "123456");
+        Usuario usuario = new Usuario("Giulia", "giulia@email.com", "123456","01001000","Rua A","São Paulo", "SP");
 
         Usuario salvo = usuarioService.salvar(usuario);
 
@@ -55,37 +55,37 @@ public class UsuarioServiceIntegrationTest {
 
     @Test
     void naoDeveSalvarUsuarioSemNome() {
-        Usuario usuario = new Usuario("", "email@email.com", "123");
+        Usuario usuario = new Usuario("", "email@email.com", "123","01001000","Rua A","São Paulo", "SP");
 
         assertThrows(IllegalArgumentException.class, () -> usuarioService.salvar(usuario));
     }
 
     @Test
     void naoDeveSalvarUsuarioSemEmail() {
-        Usuario usuario = new Usuario("Nome", "", "123");
+        Usuario usuario = new Usuario("Nome", "", "123","01001000","Rua A","São Paulo", "SP");
 
         assertThrows(IllegalArgumentException.class, () -> usuarioService.salvar(usuario));
     }
 
     @Test
     void naoDeveSalvarUsuarioSemSenha() {
-        Usuario usuario = new Usuario("Nome", "email@email.com", "");
+        Usuario usuario = new Usuario("Nome", "email@email.com", "","01001000","Rua A","São Paulo", "SP");
 
         assertThrows(IllegalArgumentException.class, () -> usuarioService.salvar(usuario));
     }
 
     @Test
     void naoDeveSalvarUsuarioComEmailDuplicado() {
-        usuarioService.salvar(new Usuario("Nome", "email@email.com", "123"));
+        usuarioService.salvar(new Usuario("Nome", "email@email.com", "123","01001000","Rua A","São Paulo", "SP"));
 
-        Usuario duplicado = new Usuario("Outro", "email@email.com", "456");
+        Usuario duplicado = new Usuario("Outro", "email@email.com", "456","01001000","Rua A","São Paulo", "SP");
 
         assertThrows(IllegalArgumentException.class, () -> usuarioService.salvar(duplicado));
     }
 
     @Test
     void deveFazerLoginComSucesso() {
-        usuarioService.salvar(new Usuario("Nome", "email@email.com", "123"));
+        usuarioService.salvar(new Usuario("Nome", "email@email.com", "123","01001000","Rua A","São Paulo", "SP"));
 
         Optional<Usuario> usuario = usuarioService.login("email@email.com", "123");
 
@@ -94,7 +94,7 @@ public class UsuarioServiceIntegrationTest {
 
     @Test
     void naoDeveFazerLoginComSenhaErrada() {
-        usuarioService.salvar(new Usuario("Nome", "email@email.com", "123"));
+        usuarioService.salvar(new Usuario("Nome", "email@email.com", "123","01001000","Rua A","São Paulo", "SP"));
 
         Optional<Usuario> usuario = usuarioService.login("email@email.com", "senhaErrada");
 
@@ -111,10 +111,10 @@ public class UsuarioServiceIntegrationTest {
     @Test
     void deveAtualizarUsuario() {
         Usuario salvo = usuarioService.salvar(
-                new Usuario("Nome", "email@email.com", "123")
+                new Usuario("Nome", "email@email.com", "123","01001000","Rua A","São Paulo", "SP")
         );
 
-        Usuario atualizado = new Usuario("Novo Nome", "novo@email.com", "456");
+        Usuario atualizado = new Usuario("Novo Nome", "novo@email.com", "456","01001000","Rua A","São Paulo", "SP");
 
         Optional<Usuario> resultado = usuarioService.atualizar(salvo.getId(), atualizado);
 
@@ -125,7 +125,7 @@ public class UsuarioServiceIntegrationTest {
 
     @Test
     void naoDeveAtualizarUsuarioInexistente() {
-        Usuario usuario = new Usuario("Nome", "email@email.com", "123");
+        Usuario usuario = new Usuario("Nome", "email@email.com", "123","01001000","Rua A","São Paulo", "SP");
 
         Optional<Usuario> resultado = usuarioService.atualizar("id-invalido", usuario);
 
@@ -135,7 +135,7 @@ public class UsuarioServiceIntegrationTest {
     @Test
     void deveDeletarUsuario() {
         Usuario salvo = usuarioService.salvar(
-                new Usuario("Nome", "email@email.com", "123")
+                new Usuario("Nome", "email@email.com", "123","01001000","Rua A","São Paulo", "SP")
         );
 
         boolean deletado = usuarioService.deletar(salvo.getId());

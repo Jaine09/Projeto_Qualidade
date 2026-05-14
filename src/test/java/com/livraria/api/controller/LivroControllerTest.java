@@ -54,7 +54,7 @@ class LivroControllerTest {
         usuarioRepository.deleteAll();
 
         usuarioLogado = usuarioRepository.save(
-                new Usuario("Giulia", "giulia@email.com", "senha")
+                new Usuario("Giulia", "giulia@email.com", "senha","01001000","Rua A","São Paulo", "SP")
         );
 
         sessaoAtiva = new MockHttpSession();

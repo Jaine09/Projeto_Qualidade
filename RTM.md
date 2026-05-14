@@ -1,6 +1,6 @@
 # RTM - Matriz de Rastreabilidade de Requisitos
 
-Projeto: Gerenciador de Biblioteca Pessoal
+Projeto: Gerenciador de Biblioteca Pessoal  
 Objetivo: mapear os requisitos funcionais aos testes automatizados e aos fluxos UML de sequência.
 
 Cobertura atual do projeto: **97%**
@@ -15,23 +15,28 @@ Cobertura atual do projeto: **97%**
 - JaCoCo
 - GitHub Actions
 - SonarQube
+- MockWebServer
+- VCR (respostas gravadas)
 
 ---
 
 # Matriz de Rastreabilidade
 
-| ID   | Requisito Funcional                    | Implementação                                                                       | Testes Relacionados                                                                                                     | Tipo de Teste                                   | Status  |
-| ---- | -------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------- |
-| RF01 | Cadastrar usuário                      | `UsuarioController`, `UsuarioRestController`, `UsuarioService`, `UsuarioRepository` | `UsuarioControllerTest`, `UsuarioRestControllerTest`, `UsuarioServiceIntegrationTest`, `UsuarioServiceParametrizedTest` | Controller/E2E, REST, Integração, Parametrizado | Coberto |
-| RF02 | Realizar login                         | `UsuarioController`, `UsuarioRestController`, `UsuarioService`                      | `UsuarioControllerTest`, `UsuarioRestControllerTest`, `UsuarioServiceIntegrationTest`, `UsuarioServiceParametrizedTest` | Controller/E2E, REST, Integração, Parametrizado | Coberto |
-| RF03 | Realizar logout                        | `UsuarioController`                                                                 | `UsuarioControllerTest`                                                                                                 | Controller/E2E                                  | Coberto |
-| RF04 | Cadastrar livro                        | `LivroController`, `LivroRestController`, `LivroService`, `LivroRepository`         | `LivroControllerTest`, `LivroRestControllerTest`, `LivroServiceIntegrationTest`, `LivroServiceParametrizedTest`         | Controller/E2E, REST, Integração, Parametrizado | Coberto |
-| RF05 | Listar livros do usuário logado        | `LivroController`, `LivroRestController`, `LivroService`, `LivroRepository`         | `LivroControllerTest`, `LivroRestControllerTest`, `LivroServiceIntegrationTest`                                         | Controller/E2E, REST, Integração                | Coberto |
-| RF06 | Buscar livro por ID                    | `LivroRestController`, `LivroService`, `LivroRepository`                            | `LivroRestControllerTest`, `LivroServiceIntegrationTest`                                                                | REST, Integração                                | Coberto |
-| RF07 | Editar livro                           | `LivroController`, `LivroRestController`, `LivroService`                            | `LivroControllerTest`, `LivroRestControllerTest`, `LivroServiceIntegrationTest`                                         | Controller/E2E, REST, Integração                | Coberto |
-| RF08 | Excluir livro                          | `LivroController`, `LivroRestController`, `LivroService`                            | `LivroControllerTest`, `LivroRestControllerTest`, `LivroServiceIntegrationTest`                                         | Controller/E2E, REST, Integração                | Coberto |
-| RF09 | Impedir acesso à biblioteca sem sessão | `LivroController`                                                                   | `LivroControllerTest`                                                                                                   | Caixa Preta / E2E                               | Coberto |
-| RF10 | Validar campos obrigatórios            | `UsuarioService`, `LivroService`                                                    | `UsuarioServiceParametrizedTest`, `LivroServiceParametrizedTest`                                                        | Parametrizado / Caixa Branca                    | Coberto |
+| ID   | Requisito Funcional                      | Implementação                                                                       | Testes Relacionados                                                                                                     | Tipo de Teste                                   | Status  |
+| ---- | ---------------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------- |
+| RF01 | Cadastrar usuário                        | `UsuarioController`, `UsuarioRestController`, `UsuarioService`, `UsuarioRepository` | `UsuarioControllerTest`, `UsuarioRestControllerTest`, `UsuarioServiceIntegrationTest`, `UsuarioServiceParametrizedTest` | Controller/E2E, REST, Integração, Parametrizado | Coberto |
+| RF02 | Realizar login                           | `UsuarioController`, `UsuarioRestController`, `UsuarioService`                      | `UsuarioControllerTest`, `UsuarioRestControllerTest`, `UsuarioServiceIntegrationTest`, `UsuarioServiceParametrizedTest` | Controller/E2E, REST, Integração, Parametrizado | Coberto |
+| RF03 | Realizar logout                          | `UsuarioController`                                                                 | `UsuarioControllerTest`                                                                                                 | Controller/E2E                                  | Coberto |
+| RF04 | Cadastrar livro                          | `LivroController`, `LivroRestController`, `LivroService`, `LivroRepository`         | `LivroControllerTest`, `LivroRestControllerTest`, `LivroServiceIntegrationTest`, `LivroServiceParametrizedTest`         | Controller/E2E, REST, Integração, Parametrizado | Coberto |
+| RF05 | Listar livros do usuário logado          | `LivroController`, `LivroRestController`, `LivroService`, `LivroRepository`         | `LivroControllerTest`, `LivroRestControllerTest`, `LivroServiceIntegrationTest`                                         | Controller/E2E, REST, Integração                | Coberto |
+| RF06 | Buscar livro por ID                      | `LivroRestController`, `LivroService`, `LivroRepository`                            | `LivroRestControllerTest`, `LivroServiceIntegrationTest`                                                                | REST, Integração                                | Coberto |
+| RF07 | Editar livro                             | `LivroController`, `LivroRestController`, `LivroService`                            | `LivroControllerTest`, `LivroRestControllerTest`, `LivroServiceIntegrationTest`                                         | Controller/E2E, REST, Integração                | Coberto |
+| RF08 | Excluir livro                            | `LivroController`, `LivroRestController`, `LivroService`                            | `LivroControllerTest`, `LivroRestControllerTest`, `LivroServiceIntegrationTest`                                         | Controller/E2E, REST, Integração                | Coberto |
+| RF09 | Impedir acesso à biblioteca sem sessão   | `LivroController`                                                                   | `LivroControllerTest`                                                                                                   | Caixa Preta / E2E                               | Coberto |
+| RF10 | Validar campos obrigatórios              | `UsuarioService`, `LivroService`                                                    | `UsuarioServiceParametrizedTest`, `LivroServiceParametrizedTest`                                                        | Parametrizado / Caixa Branca                    | Coberto |
+| RF11 | Buscar endereço automaticamente via CEP  | `ViaCepService`, `UsuarioController`, `cadastro.html`                               | `ViaCepServiceVcrTest`                                                                                                  | Integração / VCR                                | Coberto |
+| RF12 | Exibir capa personalizada do livro       | `Livro`, `cadastrarLivro.html`, `editarLivros.html`, `paginaInicial.html`           | `LivroControllerTest`, `LivroRestControllerTest`                                                                        | Controller/E2E                                  | Coberto |
+| RF13 | Buscar livros dinamicamente na interface | `paginaInicial.html`                                                                | `LivroControllerTest`                                                                                                   | Front-end / E2E                                 | Coberto |
 
 ---
 
@@ -278,3 +283,131 @@ sequenceDiagram
         Service-->>Controller: entidade salva
     end
 ```
+
+---
+
+# RF11 - Busca Automática de Endereço via CEP
+
+```mermaid
+sequenceDiagram
+    actor Usuario
+    participant TelaCadastro as Tela Cadastro
+    participant JavaScript
+    participant UsuarioController
+    participant ViaCepService
+    participant ViaCEPAPI as API ViaCEP
+
+    Usuario->>TelaCadastro: Digita CEP
+    Usuario->>JavaScript: Clica em Buscar CEP
+    JavaScript->>UsuarioController: GET /api/cep/{cep}
+    UsuarioController->>ViaCepService: buscarCep(cep)
+    ViaCepService->>ViaCEPAPI: consulta CEP
+    ViaCEPAPI-->>ViaCepService: dados do endereço
+    ViaCepService-->>UsuarioController: endereço preenchido
+    UsuarioController-->>JavaScript: JSON endereço
+    JavaScript-->>TelaCadastro: preenche endereço/cidade/estado
+```
+
+---
+
+# RF12 - Cadastro de Capa do Livro
+
+```mermaid
+sequenceDiagram
+    actor Usuario
+    participant TelaLivro
+    participant JavaScript
+    participant LivroController
+    participant LivroService
+    participant MongoDB
+
+    Usuario->>TelaLivro: Cola URL da capa
+    JavaScript-->>TelaLivro: Atualiza preview da imagem
+    Usuario->>TelaLivro: Salva livro
+    TelaLivro->>LivroController: POST /salvar
+    LivroController->>LivroService: salvar(livro)
+    LivroService->>MongoDB: persistir imagem
+    MongoDB-->>LivroService: livro salvo
+    LivroService-->>LivroController: livro salvo
+    LivroController-->>TelaLivro: redirect:/home
+```
+
+---
+
+# RF13 - Busca Dinâmica de Livros
+
+```mermaid
+sequenceDiagram
+    actor Usuario
+    participant TelaHome
+    participant JavaScript
+    participant CardsLivros
+
+    Usuario->>TelaHome: Digita no campo buscar
+    TelaHome->>JavaScript: keyup
+    JavaScript->>CardsLivros: filtrar livros
+    CardsLivros-->>Usuario: exibe apenas livros compatíveis
+```
+
+---
+
+# Cobertura e Qualidade
+
+## Cobertura Atual
+
+✅ 97%
+
+## Estratégia Utilizada
+
+- Testes REST
+- Testes MVC/E2E
+- Testes de integração
+- Testes parametrizados
+- Testcontainers
+- JaCoCo
+- SonarQube
+- GitHub Actions
+- MockWebServer
+- VCR
+
+---
+
+# Integração Externa
+
+O projeto possui integração com a API ViaCEP.
+
+Os testes da integração utilizam:
+
+- MockWebServer
+- respostas gravadas em JSON
+- reprodução das respostas sem mocks manuais
+
+Arquivos utilizados:
+
+```text
+src/test/resources/vcr
+├── cep_valido.json
+└── cep_invalido.json
+```
+
+Teste relacionado:
+
+```text
+ViaCepServiceVcrTest
+```
+
+---
+
+# Integrantes
+
+- Giulia Alciati
+- Camile Rosa
+- Jaine Santos
+
+---
+
+# Disciplina
+
+Projeto desenvolvido para a disciplina de Qualidade de Software.
+
+Centro Universitário Senac.

@@ -66,7 +66,7 @@ class UsuarioControllerTest {
 
     @Test
     void deveFazerLoginComSucesso() throws Exception {
-        usuarioService.salvar(new Usuario("Giulia", "giulia@email.com", "senha123"));
+        usuarioService.salvar(new Usuario("Giulia", "giulia@email.com", "senha123","01001000","Rua A","São Paulo", "SP"));
 
         MockHttpSession sessao = new MockHttpSession();
 
@@ -102,17 +102,26 @@ class UsuarioControllerTest {
     }
 
     @Test
-    void deveCadastrarUsuarioComSucesso() throws Exception {
-        mockMvc.perform(post("/cadastro")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("nome", "Giulia")
-                        .param("email", "giulia@email.com")
-                        .param("senha", "senha123"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));
+void deveCadastrarUsuarioComSucesso() throws Exception {
 
-        assertTrue(usuarioRepository.findByEmail("giulia@email.com").isPresent());
-    }
+    mockMvc.perform(post("/cadastro")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .param("nome", "Giulia")
+                    .param("email", "giulia@email.com")
+                    .param("senha", "senha123")
+                    .param("cep", "01001000")
+                    .param("endereco", "Praça da Sé")
+                    .param("cidade", "São Paulo")
+                    .param("estado", "SP"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/login"));
+
+    assertTrue(
+            usuarioRepository
+                    .findByEmail("giulia@email.com")
+                    .isPresent()
+    );
+}
 
     @Test
     void deveRetornarErroAoCadastrarUsuarioInvalido() throws Exception {
@@ -120,7 +129,11 @@ class UsuarioControllerTest {
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("nome", "")
                         .param("email", "giulia@email.com")
-                        .param("senha", "senha123"))
+                        .param("senha", "senha123")
+                        .param("cep", "05873210")
+                        .param("endereco", "Rua doutor felipe cabral de vasconcellos")
+                        .param("cidade","São Paulo")
+                        .param("estado","SP"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("cadastro"))
                 .andExpect(model().attributeExists("erro"))
@@ -130,7 +143,15 @@ class UsuarioControllerTest {
     @Test
     void deveFazerLogoutERedirecionarParaLogin() throws Exception {
         MockHttpSession sessao = new MockHttpSession();
-        sessao.setAttribute("usuarioLogado", new Usuario("Giulia", "giulia@email.com", null));
+        sessao.setAttribute("usuarioLogado", new Usuario(
+        "Giulia",
+        "giulia@email.com",
+        "senha123",
+        "01001000",
+        "Rua A",
+        "São Paulo",
+        "SP"
+));
 
         mockMvc.perform(get("/logout").session(sessao))
                 .andExpect(status().is3xxRedirection())
